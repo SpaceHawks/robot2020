@@ -57,6 +57,7 @@ S = self.H * P * self.HT + self.R
 K = P * self.HT * numpy.linalg.pinv(S)
 self.X0 = Xp + K * Y
 self.P0 = (self.I - K * self.H) * P
+self.runAdaptiveFilter(Y, S)
 ```
 
 This may look confusing, but breaking it down should help.
@@ -104,7 +105,17 @@ Of course, `K` is a matrix, not a scalar, but this is the general idea.
 ##### P0
 `P0` is essentially equal to: `(1-K) * P`, but `1` is replaced with `I`, the identity matrix, and K has to be multiplied by `H` to bring `K` up to the correct dimensions- it again does not change the values in any way. 
 
+##### Adaptive Filter
+The `runAdaptiveFilter` method simply takes in the Y (residual) and S (error in the residual) and computes:  
+`E = Y² / S`
+
+On *average*, we expect the value of E to be zero (Remember, `Y` is the difference between what we expected and what we measured; due to Gaussian probabilities, this should be zero). However, when the measurement differs greatly from `Xp` (the mathematical prediction), `E` will have a rather large value. `S` sort of normalizes `Y²` to account for measurement errors. 
+
+We can assume that by setting a threshold for `E`, we can determine when the robot is making a manuever (speeding up, turning, etc.). This value should be high enough that random noise won't be detected as a manuever. When this occurs, the value for `Q`, the error in our mathematical prediction, should be increased. This means that during the time the manuever is taking place, more weight will be placed with the measurements. 
+
+As soon as the mathematical model and measurements converge again, the value of `Q` is lowered back to its starting value.
+
 ## TODO
-- Gating - What if there is an extraneous measurement that says we our location is on Mars? This would obviously be incorrect and we could throw this measurement out. Without gating, this could cause the filter to diverge or behave strangely.
+- Gating - What if there is an extraneous measurement that says we our location is on Mars? This would obviously be incorrect and we could throw this measurement out. Without gating, this could cause the filter to diverge or behave strangely, especially with the adaptive filter. Testing will determine if this is necessary or not.
 - Calculating Q and R - R can be found from the manufacturer information for the sensors (Remember, it's just the error in the measurement), but Q will have to be found by running tests with the robot
 - Getting more inputs -The more measurements we make, the more accurate our position estimation will be. Can we calculate the velocity from our motor inputs? Would adding distance sensors help?
