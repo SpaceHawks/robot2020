@@ -8,7 +8,7 @@ matrix = numpy.matrix  # I just want my life to be easier
 
 
 class KalmanFilter:
-    def __init__(self, dt=1, stateMatrix=[0, 0, 0, 0, 0, 0], Q=0.0001, R=0.02, std=6):
+    def __init__(self, dt=1, stateMatrix=[0., 0, 0, 0, 0, 0], Q=2, R=0.02, std=100):
         # Measurement time interval
         self.dt = dt
 
@@ -18,7 +18,7 @@ class KalmanFilter:
         # State transition matrix
         self.A = matrix(
             [
-                [1, 0, 0, dt, 0, 0],
+                [1., 0, 0, dt, 0, 0],
                 [0, 1, 0, 0, dt, 0],
                 [0, 0, 1, 0, 0, dt],
                 [0, 0, 0, 1, 0, 0],
@@ -46,7 +46,7 @@ class KalmanFilter:
 
         # Observation matrix - We are only observing (measuring) x, y, and theta
         self.H = matrix([
-            [1, 0, 0, 0, 0, 0],
+            [1., 0, 0, 0, 0, 0],
             [0, 1, 0, 0, 0, 0],
             [0, 0, 1, 0, 0, 0],
         ])
@@ -61,7 +61,7 @@ class KalmanFilter:
         self.R = matrix(numpy.eye(self.H.shape[0])) * R
 
         # Process error covariance
-        self.Q = matrix(numpy.diag([0, 0, 0, Q, Q, Q]))
+        self.Q = matrix(numpy.eye(self.A.shape[0])) * 0.001
 
         # ADAPTIVE FILTER VARIABLES
 
@@ -76,15 +76,15 @@ class KalmanFilter:
 
     def addMeasurement(self, measurement, accVector):
         U = matrix(accVector)  # Control input vector
-        Xp = self.A * self.X0 + self.B * U
-        P = self.A * self.P0 * self.AT + self.Q
-        Y = matrix(measurement) - self.H * Xp
-        S = self.H * P * self.HT + self.R
-        K = P * self.HT * numpy.linalg.pinv(S)
-        self.X0 = Xp + K * Y
-        self.P0 = (self.I - K * self.H) * P
+        Xp = self.A * self.X0 + self.B * U  # Mathematical prediction
+        P = self.A * self.P0 * self.AT + self.Q  # Error in mathematical prediction
+        Y = matrix(measurement) - self.H * Xp  # Innovation (measurement - prediction)
+        S = self.H * P * self.HT + self.R  # Innovation covariance
+        K = P * self.HT * numpy.linalg.pinv(S)  # Kalman gain (how much to weight prediction vs measurement)
+        self.X0 = Xp + K * Y  # New state matrix
+        self.P0 = (self.I - K * self.H) * P  # New predicted error covariance
 
-        # Update Q if measurement was way off (or if the measurement has returned to more likely values)
+        # Increase Q if measurement was way off (or decrease if the measurement has returned to more likely values)
         # This should activate when the robot manuevers so that the model can correct itself quickly
         self.runAdaptiveFilter(Y, S)
         return self.X0
