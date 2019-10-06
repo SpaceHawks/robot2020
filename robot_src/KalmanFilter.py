@@ -8,7 +8,7 @@ matrix = numpy.matrix  # I just want my life to be easier
 
 
 class KalmanFilter:
-    def __init__(self, dt=1, stateMatrix=[0., 0, 0, 0, 0, 0], Q=2, R=0.02, std=100):
+    def __init__(self, dt=1, stateMatrix=[0., 0, 0, 0, 0, 0], Q=2, R=0.02, std=100, adaptive=True):
         # Measurement time interval
         self.dt = dt
 
@@ -65,6 +65,9 @@ class KalmanFilter:
 
         # ADAPTIVE FILTER VARIABLES
 
+        # Enable/disable
+        self.adaptive = adaptive
+
         # Number of standard deviations for adaptive filter to kick in
         self.std = std
 
@@ -86,7 +89,8 @@ class KalmanFilter:
 
         # Increase Q if measurement was way off (or decrease if the measurement has returned to more likely values)
         # This should activate when the robot manuevers so that the model can correct itself quickly
-        self.runAdaptiveFilter(Y, S)
+        if self.adaptive:
+            self.runAdaptiveFilter(Y, S)
         return self.X0
 
     def runAdaptiveFilter(self, Y, S):
