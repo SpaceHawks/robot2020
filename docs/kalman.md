@@ -115,6 +115,10 @@ We can assume that by setting a threshold for `E`, we can determine when the rob
 
 As soon as the mathematical model and measurements converge again, the value of `Q` is lowered back to its starting value.
 
+Example of no adpative filter vs. adaptive filter:
+![Eventually converges, but not immediately](https://i.imgur.com/2QiUl6k.png)
+![Converges much more quickly](https://i.imgur.com/CAeJ9of.png)
+
 ## TODO
 - Gating - What if there is an extraneous measurement that says we our location is on Mars? This would obviously be incorrect and we could throw this measurement out. Without gating, this could cause the filter to diverge or behave strangely, especially with the adaptive filter. Testing will determine if this is necessary or not.
 - Calculating Q and R - R can be found from the manufacturer information for the sensors (Remember, it's just the error in the measurement), but Q will have to be found by running tests with the robot
