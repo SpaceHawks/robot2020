@@ -16,7 +16,6 @@ The measurement matrix is the observed [`x`, `y`, `θ`] of the robot. These valu
 from kalman import KalmanFilter
 import numpy
 import random
-import json
 
 # dt is how often measurement updates are done (dt=0.5s would imply a measurement every 0.5s)
 # State Matrix contains the starting values [x, y, theta, x', y', w]
