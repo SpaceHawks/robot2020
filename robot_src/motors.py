@@ -3,21 +3,23 @@ from board import SCL, SDA
 from adafruit_pca9685 import PCA9685
 from pysabertooth import Sabertooth
 import busio
+
+# 
+i2c_bus = busio.I2C(SCL, SDA)
+pca = PCA9685(i2c_bus, address=0x40)
+pca.frequency = 1600
+
+# 
+motor0 = Sabertooth(pca.channels[0], 0.1)
+motor1 = Sabertooth(pca.channels[1], 0.1)
+motor2 = Sabertooth(pca.channels[2], 0.1)
+motor3 = Sabertooth(pca.channels[3], 0.1)
+
+motor_speeds = [0, 0, 0, 0]
+chassis_speed = 0
+
+
 class motors:
-
-    @staticmethod
-    def __inti__():
-        i2c_bus = busio.I2C(SCL, SDA)
-        pca = PCA9685(i2c_bus, address=0x40)
-        pca.frequency = 1600
-
-        motor0 = Sabertooth(pca.channels[0], 0.1)
-        motor1 = Sabertooth(pca.channels[1], 0.1)
-        motor2 = Sabertooth(pca.channels[2], 0.1)
-        motor3 = Sabertooth(pca.channels[3], 0.1)
-
-        motor_speeds = [0, 0, 0, 0]
-        chassis_speed = 0
 
     @staticmethod
     def set_motor_speed(motor, percent):
@@ -58,8 +60,9 @@ class motors:
         chassis_speed = 0
 
     @staticmethod
-    def arcade_drive():
-
+    def arcade_drive(throttle, turn):
+        
+    
     @staticmethod
     def tank_drive(left_percent, right_percent):
         motor0.drive(1, left_percent/100)
