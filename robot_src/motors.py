@@ -4,12 +4,12 @@ from adafruit_pca9685 import PCA9685
 from pysabertooth import Sabertooth
 import busio
 
-# 
+#
 i2c_bus = busio.I2C(SCL, SDA)
 pca = PCA9685(i2c_bus, address=0x40)
 pca.frequency = 1600
 
-# 
+#
 motor0 = Sabertooth(pca.channels[0], 0.1)
 motor1 = Sabertooth(pca.channels[1], 0.1)
 motor2 = Sabertooth(pca.channels[2], 0.1)
@@ -24,21 +24,21 @@ class motors:
     @staticmethod
     def set_motor_speed(motor, percent):
         if(motor == 0):
-            motor0.drive(1, percent/100)
+            motor0.drive(1, percent)
         elif(motor == 1):
-            motor1.drive(1, percent/100)
+            motor1.drive(1, percent)
         elif(motor == 2):
-            motor2.drive(1, percent/100)
+            motor2.drive(1, percent)
         elif(motor == 3):
-            motor3.drive(1, percent/100)
+            motor3.drive(1, percent)
         motor_speeds[motor] = percent
 
     @staticmethod
     def set_chassis_speed(percent):
-        motor0.drive(1, percent/100)
-        motor1.drive(1, percent/100)
-        motor2.drive(1, percent/100)
-        motor3.drive(1, percent/100)
+        motor0.drive(1, percent)
+        motor1.drive(1, percent)
+        motor2.drive(1, percent)
+        motor3.drive(1, percent)
         motor_speeds = [percent, percent, percent, percent]
         chassis_speed = percent
 
@@ -61,12 +61,12 @@ class motors:
 
     @staticmethod
     def arcade_drive(throttle, turn):
-        
-    
+
+
     @staticmethod
     def tank_drive(left_percent, right_percent):
-        motor0.drive(1, left_percent/100)
-        motor1.drive(1, left_percent/100)
-        motor2.drive(1, right_percent/100)
-        motor3.drive(1, right_percent/100)
+        motor0.drive(1, left_percent)
+        motor1.drive(1, left_percent)
+        motor2.drive(1, right_percent)
+        motor3.drive(1, right_percent)
         motor_speeds = [left_percent, left_percent, right_percent, right_percent]
