@@ -61,12 +61,12 @@ class motors:
 
     @staticmethod
     def arcade_drive(throttle, turn):
-        v = (100 - abs(trun)) * (throttle / 100) + throttle
-	    w = (100 - abs(throttle)) * (turn / 100) + turn
-	    l = (v + w) / 2
-	    r = (v - w) / 2
-	    # send tank drive command
-	    motors.tank_drive(l, r)
+        v = (100 - abs(turn)) * (throttle / 100) + throttle
+	w = (100 - abs(throttle)) * (turn / 100) + turn
+	l = (v + w) / 2
+	r = (v - w) / 2
+	# send tank drive command
+	motors.tank_drive(l, r)
 
 
     @staticmethod
