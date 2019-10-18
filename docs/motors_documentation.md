@@ -1,5 +1,11 @@
 
 Documentation for the Motors Library (motors.py)
+# Motors:
+- 0: Left Front
+- 1: Left Back
+- 2: Right Front
+- 3: Right Back
+
 
 # Methods:
 - `set_motor_speed(motor, percent)`
