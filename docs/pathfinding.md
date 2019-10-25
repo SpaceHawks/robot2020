@@ -183,7 +183,7 @@ def path_clear(an):
         dy = o.y - r.y
         ca = cos(an)
         sa = sin(an)
-        if (abs(dx * ca - dy * sa) <= safe_dist and (-ca * dy > sa * dx)):
+        if (abs(dx * ca - dy * sa) <= safe_dist and (-ca * dy < sa * dx))::
             valid = False
             break
     return valid
