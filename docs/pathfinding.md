@@ -83,6 +83,7 @@ The equation for the perpindicular distance from a point (Ox, Oy) to a line `ax 
 ![](https://i.imgur.com/Mjh3qyf.png)
 
 Plugging in all relevant values and simplifying (a lot) gives the equation:
+
 ![Perpindicular distance equation](http://www.sciweavers.org/tex2img.php?eq=%7C(O_x-R_x)cos(%5Ctheta)%20%2B%20(O_y-R_y)sin(%5Ctheta)%7C&bc=White&fc=Black&im=jpg&fs=12&ff=arev)<br>
 A very nice formula. Note that this *still* uses `(-180°, 180°)` angles.
 
