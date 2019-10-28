@@ -1,5 +1,33 @@
 # Pathfinding
 
+## API
+```py
+avoid = Avoid(width, length, angle_step, buffer, avoid_radius)
+
+# get direction string
+dir = avoid.get_path_dir(robot, obstacles)
+# or angle
+angle = avoid.get_angle(robot, obstacles):
+```
+
+**Avoid()**:
+- width: The width of the robot
+- height: The height of the robot
+- angle_step: An angle step of 1.5 would make the robot check +/-(0°, 1.5°, 3°, 4.5°... 180°) for possible paths. Note that this is in *degrees*.
+- buffer: This basically artificially increases the robot's width so that the robot is less likely to erroneously scrape an obstacle.
+- avoid_radius: How close an obstacle should be to be taken into consideration
+- **Returns**: An Avoid() object containing the two methods below
+
+**Avoid.get_path_dir()**:
+- robot: Contains the `x`, `y`, and `a` properties of the robot (x,y coordinates and angle).
+- obstacles: An array of obstacle objects containing the `x` and `y` properties of the obstacle
+- **Returns:** A string ("forward", "left", or "right"), denoting whether to move straight ahead, turn left, or turn right
+
+**Avoid.get_angle()**:
+- robot: Contains the `x`, `y`, and `a` properties of the robot (x,y coordinates and angle).
+- obstacles: An array of obstacle objects containing the `x` and `y` properties of the obstacle
+- **Returns:** The angle the robot should be moving at (where 0° is forward, 90° is to the right, -90° is to the left) in radians
+
 ## Purpose
 To efficiently navigate through an unknown terrain of boulders and craters using a LIDAR sensor to detect them in advance, and an algorithm to avoid them once detected.
 
