@@ -5,7 +5,7 @@
 avoid = Avoid(width, length, angle_step, buffer, avoid_radius)
 
 # get direction string
-dir = avoid.get_path_dir(robot, obstacles)
+direction = avoid.get_path_dir(robot, obstacles)
 # or angle
 angle = avoid.get_angle(robot, obstacles):
 ```
@@ -27,6 +27,8 @@ angle = avoid.get_angle(robot, obstacles):
 - robot: Contains the `x`, `y`, and `a` properties of the robot (x,y coordinates and angle).
 - obstacles: An array of obstacle objects containing the `x` and `y` properties of the obstacle
 - **Returns:** The angle the robot should be moving at (where 0° is forward, 90° is to the right, -90° is to the left) in radians
+
+See more example code at the bottom.
 
 ## Purpose
 To efficiently navigate through an unknown terrain of boulders and craters using a LIDAR sensor to detect them in advance, and an algorithm to avoid them once detected.
