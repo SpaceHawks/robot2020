@@ -21,7 +21,7 @@ class Avoid:
         best_angle = 0
         # Filter obstacles that are too far away to matter
         valid_obstacles = [(o, o.x - R.x, o.y - R.y) for o in obstacles]
-        valid_obstacles = [o for o in valid_obstacles if self.dist_squared < o[1] ** 2 + o[2] ** 2]
+        valid_obstacles = [o for o in valid_obstacles if self.dist_squared > o[1] ** 2 + o[2] ** 2]
 
         # Prefer current angle
         if self._path_clear(R, valid_obstacles, R.a):
