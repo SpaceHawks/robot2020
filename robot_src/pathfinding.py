@@ -23,11 +23,15 @@ class Avoid:
         valid_obstacles = [(o, o.x - R.x, o.y - R.y) for o in obstacles]
         valid_obstacles = [o for o in valid_obstacles if self.dist_squared < o[1] ** 2 + o[2] ** 2]
 
-        for a in self.angles:
-            an = (a + R.a)
-            if (self._path_clear(R, valid_obstacles, an)):
-                best_angle = an
-                break
+        # Prefer current angle
+        if self._path_clear(R, valid_obstacles, R.a):
+            best_angle = R.a
+        else:  # Otherwise find angle closest to 0 degrees (straight ahead)
+            for a in self.angles:
+                # an = (a + R.a)
+                if self._path_clear(R, valid_obstacles, a):
+                    best_angle = an
+                    break
         return best_angle
 
     def _path_clear(self, R, obstacles, an):
