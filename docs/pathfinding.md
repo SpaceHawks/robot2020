@@ -1,5 +1,35 @@
 # Pathfinding
 
+## API
+```py
+avoid = Avoid(width, length, angle_step, buffer, avoid_radius)
+
+# get direction string
+direction = avoid.get_path_dir(robot, obstacles)
+# or angle
+angle = avoid.get_angle(robot, obstacles):
+```
+
+**Avoid()**:
+- width: The width of the robot
+- height: The height of the robot
+- angle_step: An angle step of 1.5 would make the robot check +/-(0°, 1.5°, 3°, 4.5°... 180°) for possible paths. Note that this is in *degrees*.
+- buffer: This basically artificially increases the robot's width so that the robot is less likely to erroneously scrape an obstacle.
+- avoid_radius: How close an obstacle should be to be taken into consideration
+- **Returns**: An Avoid() object containing the two methods below
+
+**Avoid.get_path_dir()**:
+- robot: Contains the `x`, `y`, and `a` properties of the robot (x,y coordinates and angle).
+- obstacles: An array of obstacle objects containing the `x` and `y` properties of the obstacle
+- **Returns:** A string ("forward", "left", or "right"), denoting whether to move straight ahead, turn left, or turn right
+
+**Avoid.get_angle()**:
+- robot: Contains the `x`, `y`, and `a` properties of the robot (x,y coordinates and angle).
+- obstacles: An array of obstacle objects containing the `x` and `y` properties of the obstacle
+- **Returns:** The angle the robot should be moving at (where 0° is forward, 90° is to the right, -90° is to the left) in radians
+
+See more example code at the bottom.
+
 ## Purpose
 To efficiently navigate through an unknown terrain of boulders and craters using a LIDAR sensor to detect them in advance, and an algorithm to avoid them once detected.
 
@@ -80,10 +110,13 @@ Now we can write the values of a, b, and c:
 
 The equation for the perpindicular distance from a point (Ox, Oy) to a line `ax + by + c = 0` is:
 
-![](https://i.imgur.com/Mjh3qyf.png)
+![](http://www.sciweavers.org/tex2img.php?eq=%5Cfrac%7B%7CaO_x%2BbO_y%2Bc%7C%7D%7B%5Csqrt%7Ba%5E2%20%2B%20b%5E2%7D%7D&bc=White&fc=Black&im=jpg&fs=12&ff=arev)
 
 Plugging in all relevant values and simplifying (a lot) gives the equation:
-![Perpindicular distance equation](http://www.sciweavers.org/tex2img.php?eq=%7C(O_x-R_x)cos(%5Ctheta)%20%2B%20(O_y-R_y)sin(%5Ctheta)%7C&bc=White&fc=Black&im=jpg&fs=12&ff=arev)<br>
+
+![Perpindicular distance equation](http://www.sciweavers.org/tex2img.php?eq=%7C(O_x-R_x)cos(%5Ctheta)%20%2B%20(O_y-R_y)sin(%5Ctheta)%7C&bc=White&fc=Black&im=jpg&fs=12&ff=arev)
+
+
 A very nice formula. Note that this *still* uses `(-180°, 180°)` angles.
 
 ### Updated pseudocode
@@ -190,3 +223,61 @@ def path_clear(an):
 ```
 
 Every piece is now in place- we can find the optimal angle which is closest to our current angle, not running into any obstacles, and ultimately moving towards the mining area.
+
+Some example code is as follows:
+<details><summary>Code for testing Avoid class</summary>
+<p>
+
+```python
+from pathfinding import Avoid
+import math
+import random
+import time
+
+
+class Robot:
+    def __init__(self, x, y, w, h, a=0):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.a = a
+
+
+class Obstacle:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return "Obstacle: (" + str(self.x) + ", " + str(self.y) + ")"
+
+
+R = Robot(10, 10, 2, 2, 0)
+
+avoid = Avoid(R.w, R.h, 1.0, 0.1, 25)
+
+start = time.time()
+
+# How long to get the angle 1000 times in a row with 1000 obstacles?
+for i in range(1000):
+    obstacles = []
+    for _ in range(1000):
+        obstacles.append(Obstacle(random.uniform(R.x - 20, R.x + 20), random.uniform(R.y - 20, R.y + 20)))
+
+    a = avoid.get_angle(R, obstacles)
+    R.x += random.uniform(-2, 2)
+    R.y += random.uniform(-2, 2)
+
+total_time = time.time() - start
+# On Raspberry Pi 3B+, angles/second ~= 30,000 / # of obstacles
+print(str(total_time / 1000) + " seconds/angle", str(1000 / total_time) + " angles/second")
+
+
+```
+
+</p>
+</details>
+
+### Performance
+This code was tested on a Raspberry Pi 3B+ (less powerful than the robot's Tinkerboard) and was able to calculate about `30,000 / n` angles per second, where n is the number of obstacle points. This means if there are 1,000 obstacle points, we can update our trajectory approximately 30 times per second. This also means that the calculation time scales pretty much *linearly* as the number of obstacle points grows.
