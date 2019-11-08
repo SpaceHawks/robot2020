@@ -30,10 +30,10 @@ class motors:
     @staticmethod
     def set_motor_speed(motor, percent):
         #print("set mot speed:", motor, percent)
-        if motor < 2:
+        if motor = 0 OR motor = 2 :
             l_saber.drive(motor, percent)
-        elif motor < 4:
-            r_saber.drive(motor - 2, percent)
+        elif motor = 1 OR motor = 3:
+            r_saber.drive(motor, percent)
         else:
             raise Exception("bad motor number")
 
