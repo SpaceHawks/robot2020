@@ -11,8 +11,8 @@ import busio
 
 #
 
-l_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 128, timeout=None)
-r_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 129, timeout=None)
+l_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 128, timeout=1000)
+r_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 129, timeout=1000)
 
 '''
 motor0 = Sabertooth(pca.channels[0], 0.1)
@@ -29,11 +29,11 @@ class motors:
 
     @staticmethod
     def set_motor_speed(motor, percent):
-        #print("set mot speed:", motor, percent)
-        if motor = 0 OR motor = 2 :
-            l_saber.drive(motor, percent)
-        elif motor = 1 OR motor = 3:
-            r_saber.drive(motor, percent)
+        print("set mot speed:", motor, percent)
+        if motor == 0 or motor == 2 :
+            l_saber.drive(0 if motor == 0 else 1, percent)
+        elif motor == 1 or motor == 3:
+            r_saber.drive(0 if motor == 1 else 1, percent)
         else:
             raise Exception("bad motor number")
 
