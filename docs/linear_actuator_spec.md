@@ -23,3 +23,4 @@
   - `_balance`:
     - aligns the linear actuators so that both of their adcdummy values line up
     - if the `position` attribute is `None` align them both to the first one's current value
+    - use the pid controller to keep them balanced
