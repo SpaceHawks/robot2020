@@ -55,3 +55,12 @@ Need some buttons to tell robot what to do
 ### Data Visualizations
 This may not be needed for MVP but I can use d3.js for graphs and other data visualizations
 - would likely be needed for logfile viewer
+
+### Communication protocol/Instructions
+|Name|Data|Example|
+|-------------|----------|-----------|
+|Obstacle Point|O:x,y, ...|O:30,23,45,60|
+|Robot Point|R:x,y|R:3,2|
+|Arcade Drive|AD:throttle,turn|AR:85,40|
+|Tank Drive|TD:left,right|TD:80,30|
+|STOP|STOP|STOP|
