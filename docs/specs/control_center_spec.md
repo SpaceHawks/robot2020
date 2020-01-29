@@ -63,4 +63,5 @@ This may not be needed for MVP but I can use d3.js for graphs and other data vis
 |Robot Point|R:x,y|R:3,2|
 |Arcade Drive|AD:throttle,turn|AR:85,40|
 |Tank Drive|TD:left,right|TD:80,30|
+|Autonomous|AI|AI|
 |STOP|STOP|STOP|
