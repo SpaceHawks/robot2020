@@ -1,13 +1,15 @@
 let ws;
-let settings;
+let driveSettings, displaySettings;
 let state = 2;
 const states = ["Tank Drive", "Arcade Drive", "Autonomous"];
 const shortStates = ["TD", "AD", "AI"];
 
+
 let msgs = [];
 
-
 ws = {send: console.log};
+
+let panels = [];
 
 async function sendState() {
 	if (state < 2) await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
@@ -20,17 +22,29 @@ function setup() {
 	// ws.onmessage = msg => {
     // 	msgs.push(msg.data);
 	// };
-	settings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2, "Drive settings")
+	driveSettings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2, "Drive settings")
 		.addButton("Tank Drive", ()=>handlePress("TD"))
 		.addButton("Arcade Drive", ()=>handlePress("AD"))
 		.addButton("Autonomous", () => handlePress("AI"))
 		.addButton("STOP", () => handlePress("STOP"))
 		.overrideStyle("STOP", "backgroundColor", "red")
 		.overrideStyle("STOP", "color", "white")
+		.setWidth(200)
+		.setHeight(225);
+	for (let state of states) driveSettings.overrideStyle(state, "backgroundColor", "gray");
+	driveSettings.overrideStyle(states[state], "backgroundColor", "green");
 
-	for (let state of states) settings.overrideStyle(state, "backgroundColor", "gray");
-	settings.overrideStyle(states[state], "backgroundColor", "green");
-	sendState()
+	displaySettings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2 + 225, "Display settings")
+		.addBoolean("Snap panels right", true)
+		.setWidth(200)
+		.setHeight(75)
+
+	panels = [displaySettings, driveSettings];
+	for (panel of panels) panel.saveInLocalStorage(panel._titleBar.innerText);
+	createCanvas(360, 540);
+	background(51);
+	window.onresize();
+	sendState();
 }
 
 function handlePress(name, args) {
@@ -39,12 +53,13 @@ function handlePress(name, args) {
 	let newState = shortStates.indexOf(name) === -1 ? state : shortStates.indexOf(name);
 	if (newState === state) return;
 	handleStateChange(state, newState);
-
+	if (newState < 2) return sendXBOX(name);
+	else if (newState === 2) return send(name);
 }
 
 function handleStateChange(oldState, newState) {
-	settings.overrideStyle(states[oldState], "backgroundColor", "gray");
-	settings.overrideStyle(states[newState], "backgroundColor", "green");
+	driveSettings.overrideStyle(states[oldState], "backgroundColor", "gray");
+	driveSettings.overrideStyle(states[newState], "backgroundColor", "green");
 	state = newState;
 }
 
@@ -72,3 +87,12 @@ function draw() {
 
 
 }
+
+window.onresize = function(event) {
+	if (!displaySettings.getValue("Snap panels right")) return;
+	for (let panel of panels) {
+		let curY = parseInt(panel._panel.style.top.split("px")[0]);
+		let curWidth = parseInt(panel._panel.style.width.split("px")[0]);
+		panel.setPosition(document.body.clientWidth - curWidth - 50, curY);
+	}
+};
