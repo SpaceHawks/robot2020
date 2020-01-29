@@ -29,8 +29,8 @@ function setup() {
 	driveSettings.overrideStyle(states[state], "backgroundColor", "green");
 
 	displaySettings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2 + 225, "Display settings")
-		.addBoolean("Snap panels right", true)
-		.addRange("Controller refresh (ms)", 100, 30000, 1500, 100)
+		.addBoolean("Snap panels right", true, window.onresize)
+		.addRange("Controller refresh (ms)", 100, 5000, 1500, 100)
 		.setWidth(200)
 		.setHeight(150)
 
