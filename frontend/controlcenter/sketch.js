@@ -11,12 +11,6 @@ ws = {send: console.log};
 
 let panels = [];
 
-async function sendState() {
-	if (state < 2) await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
-	await new Promise(next => setTimeout(next, 1500));
-	sendState();
-}
-
 function setup() {
 	// ws = new WebSocket("ws://:8080");
 	// ws.onmessage = msg => {
@@ -36,11 +30,11 @@ function setup() {
 
 	displaySettings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2 + 225, "Display settings")
 		.addBoolean("Snap panels right", true)
+		.addRange("Controller refresh (ms)", 100, 30000, 1500, 100)
 		.setWidth(200)
-		.setHeight(75)
+		.setHeight(150)
 
 	panels = [displaySettings, driveSettings];
-	for (panel of panels) panel.saveInLocalStorage(panel._titleBar.innerText);
 	createCanvas(360, 540);
 	background(51);
 	window.onresize();
@@ -57,12 +51,21 @@ function handlePress(name, args) {
 	else if (newState === 2) return send(name);
 }
 
+// Async loop to send Arcade/Tank Drive commands
+async function sendState() {
+	if (state < 2) await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
+	await new Promise(next => setTimeout(next, displaySettings.getValue("Controller refresh (ms)")));
+	sendState();
+}
+
+// Changes color of buttons
 function handleStateChange(oldState, newState) {
 	driveSettings.overrideStyle(states[oldState], "backgroundColor", "gray");
 	driveSettings.overrideStyle(states[newState], "backgroundColor", "green");
 	state = newState;
 }
 
+// Makes the appropriate requests for Arcade/Tank Drive
 async function sendXBOX(name) {
 	try {
 		let leftY = 2//await (await fetch("http://localhost:8000/leftY")).json();
