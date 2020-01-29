@@ -60,7 +60,7 @@ This may not be needed for MVP but I can use d3.js for graphs and other data vis
 |Name|Data|Example|
 |-------------|----------|-----------|
 |Obstacle Point|O:x,y, ...|O:30,23,45,60|
-|Robot Point|R:x,y|R:3,2|
+|Robot Point|R:x,y,θ|R:3,2,45|
 |Arcade Drive|AD:throttle,turn|AR:85,40|
 |Tank Drive|TD:left,right|TD:80,30|
 |Autonomous|AI|AI|
