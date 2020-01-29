@@ -42,7 +42,10 @@ function setup() {
 }
 
 function handlePress(name, args) {
-	if (name === "STOP") return send("STOP");
+	if (name === "STOP") {
+		handleStateChange(state, -1);
+		return send("STOP");
+	}
 
 	let newState = shortStates.indexOf(name) === -1 ? state : shortStates.indexOf(name);
 	if (newState === state) return;
@@ -53,7 +56,7 @@ function handlePress(name, args) {
 
 // Async loop to send Arcade/Tank Drive commands
 async function sendState() {
-	if (state < 2) await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
+	if (state >= 0 && state < 2) await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
 	await new Promise(next => setTimeout(next, displaySettings.getValue("Controller refresh (ms)")));
 	sendState();
 }
@@ -61,7 +64,7 @@ async function sendState() {
 // Changes color of buttons
 function handleStateChange(oldState, newState) {
 	driveSettings.overrideStyle(states[oldState], "backgroundColor", "gray");
-	driveSettings.overrideStyle(states[newState], "backgroundColor", "green");
+	if (newState >= 0) driveSettings.overrideStyle(states[newState], "backgroundColor", "green");
 	state = newState;
 }
 
