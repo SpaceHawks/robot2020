@@ -1,5 +1,5 @@
 let ws;
-let driveSettings, displaySettings;
+let driveSettings, generalSettings, consoleSettings;
 let state = 2;
 const states = ["Tank Drive", "Arcade Drive", "Autonomous"];
 const shortStates = ["TD", "AD", "AI"];
@@ -7,7 +7,7 @@ const shortStates = ["TD", "AD", "AI"];
 
 let msgs = [];
 
-ws = {send: console.log};
+ws = {send: outputConsole};
 
 let panels = [];
 
@@ -16,7 +16,7 @@ function setup() {
 	// ws.onmessage = msg => {
     // 	msgs.push(msg.data);
 	// };
-	driveSettings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2, "Drive settings")
+	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
 		.addButton("Tank Drive", ()=>handlePress("TD"))
 		.addButton("Arcade Drive", ()=>handlePress("AD"))
 		.addButton("Autonomous", () => handlePress("AI"))
@@ -28,13 +28,21 @@ function setup() {
 	for (let state of states) driveSettings.overrideStyle(state, "backgroundColor", "gray");
 	driveSettings.overrideStyle(states[state], "backgroundColor", "green");
 
-	displaySettings = QuickSettings.create(document.body.clientWidth - 300, document.body.clientHeight/2 + 225, "Display settings")
+	generalSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight + 250, "General settings")
 		.addBoolean("Snap panels right", true, window.onresize)
 		.addRange("Controller refresh (ms)", 100, 5000, 1500, 100)
 		.setWidth(200)
 		.setHeight(150)
 
-	panels = [displaySettings, driveSettings];
+	consoleSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight + 425, "Console")
+		.addTextArea("Output")
+		.overrideStyle("Output", "backgroundColor", "black")
+		.overrideStyle("Output", "color", "white")
+		.setWidth(350)
+		.setHeight(150)
+		.disableControl("Output");
+
+	panels = [generalSettings, driveSettings, consoleSettings];
 	createCanvas(360, 540);
 	background(51);
 	window.onresize();
@@ -57,7 +65,7 @@ function handlePress(name, args) {
 // Async loop to send Arcade/Tank Drive commands
 async function sendState() {
 	if (state >= 0 && state < 2) await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
-	await new Promise(next => setTimeout(next, displaySettings.getValue("Controller refresh (ms)")));
+	await new Promise(next => setTimeout(next, generalSettings.getValue("Controller refresh (ms)")));
 	sendState();
 }
 
@@ -75,11 +83,11 @@ async function sendXBOX(name) {
 
 		if (name === "AD") {
 			leftX = 5//await (await fetch("http://localhost:8000/leftX")).json();
-			return send("AD", `${leftY}, ${leftX}`);
+			return send("AD", `${leftY},${leftX}`);
 		}
 		else {
 			let right = 6//await (await fetch("http://localhost:8000/right")).json();
-			return send("TD", `${leftY}, ${right}`);
+			return send("TD", `${leftY},${right}`);
 		}
 	} catch(e) {}
 }
@@ -89,13 +97,25 @@ async function send(name, data) {
 	else return ws.send(name);
 }
 
+function outputConsole(output) {
+	let prevOutput = consoleSettings.getValue("Output");
+	let rightNow = new Date()
+	consoleSettings.setValue("Output", `${prevOutput}\n> ${output} (${pad(rightNow.getHours())}:${pad(rightNow.getMinutes())}:${pad(rightNow.getSeconds())})`);
+	let outputElem = document.getElementById("Output");
+	outputElem.scrollTop = outputElem.scrollHeight;
+}
+
+function pad(n) {
+	return n < 10 ? "0" + n: n;
+}
+
 function draw() {
 
 
 }
 
 window.onresize = function(event) {
-	if (!displaySettings.getValue("Snap panels right")) return;
+	if (!generalSettings.getValue("Snap panels right")) return;
 	for (let panel of panels) {
 		let curY = parseInt(panel._panel.style.top.split("px")[0]);
 		let curWidth = parseInt(panel._panel.style.width.split("px")[0]);
