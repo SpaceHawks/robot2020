@@ -1,0 +1,15 @@
+{
+  "name": "pathfinding",
+  "version": "1.0.0",
+  "description": "",
+  "main": "3Dobstacles.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "js-priority-queue": "^0.1.5"
+  }
+}
