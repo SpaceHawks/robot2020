@@ -1,2 +1,2 @@
 # install all dependencies here
-pip3 install numpy smbus pysabertooth busio websockets asyncio hokuyolx
+sudo pip3 install numpy smbus pysabertooth busio websockets asyncio hokuyolx
