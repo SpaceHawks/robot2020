@@ -15,5 +15,5 @@ while True:
     avg_y = (y + avg_y) / 2
 
     print({'x':x, 'y':y});
-    motors.motors.arcade_drive(avg_y, avg_x)
-    time.sleep(1/8)
+    motors.DriveTrain.arcade_drive(avg_y, avg_x)
+    time.sleep(1 / 8)

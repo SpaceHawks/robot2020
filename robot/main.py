@@ -1,25 +1,42 @@
 import motors
 import tether
 
+import sys
 
 def receive_msg(msg, conn):
     # format is operator:arguments
     cmd, args = msg.split(':')
+
+    # arcade drive
     if cmd == 'AD':
-        throttle, turn = args.split(',')
-        motors.arcade_drive(throttle, turn)
+        throttle, turn = map(int, args.split(','))
+        motors.DriveTrain.arcade_drive(throttle, turn)
+
+    # tank drive
     elif cmd == 'TD':
-        left, right = args.split(',')
-        motors.tank_drive(left, right)
+        left, right = map(int, args.split(','))
+        motors.DriveTrain.tank_drive(left, right)
+
+    # stop all movement
     elif cmd == 'STOP':
-        motors.tank_drive(0,0)
+        motors.DriveTrain.stop()
+
+    # emergency stop
+    elif cmd == 'DIE':
+        motors.DriveTrain.stop()
+        sys.exit(1)
+
+    # switch to autonomous mode
     elif cmd == 'AI':
-        motors.tank_drive(0,0)
+        motors.DriveTrain.tank_drive(0, 0)
         conn.send("MSG: TODO: autonomous")
         print('auto command received')
+
     else:
-        motors.tank_drive(0,0)
+        motors.DriveTrain.tank_drive(0,0)
         conn.send("WARN: invalid command")
         print('invalid command: ', msg)
 
-tether.accept_connections(receive_msg)
+# begin accepting connections
+t = tether.accept_connections(receive_msg)
+t.join()
