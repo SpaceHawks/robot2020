@@ -42,24 +42,26 @@ def generate_obstacles():
             px = int(dim[0] + dim[2] * math.cos(a) + random.uniform(-0.3, 7))
             py = int(dim[1] + dim[2] * math.sin(a) + random.uniform(-0.3, 7))
 
-            obstacles.append((px, py))
+            obstacles.append((round(px/5), round(py/5)))
 
     #
     #   ACTUAL 3D PART
     #
     obs = [[[False for a in range(0, 12)] for y in range(1+height//5)] for x in range(1+width//5)]
 
-    for o in obstacles:
-        for ang in range(0, 12):
-            angle = math.radians(15 * ang)
-            c, s = math.cos(angle), math.sin(angle)
-            # Check robot-sized area around obstacle to see which points collide at angle
-            for x in range(-rw//2, 1+rw//2, 5):
-                xc, xs = x*c, x*s
-                for y in range(-rh//2, 1+rh//2, 5):
+
+    for ang in range(0, 12):
+        angle = math.radians(15 * ang)
+        c, s = math.cos(angle), math.sin(angle)
+        # Check robot-sized area around obstacle to see which points collide at angle
+        for x in range(-rw//2, 1+rw//2, 5):
+            for y in range(-rh//2, 1+rh//2, 5):
+                Dx = round((x*c - y*s)/5)
+                Dy = round((x*s + y*c)/5)
+                for o in obstacles:
                     # Rotate point by ang (wrt obstacle center) and find closest grid point
-                    Px = round(((xc - y*s) + o[0])/5)
-                    Py = round(((xs + y*c) + o[1])/5)
+                    Px = o[0] + Dx
+                    Py = o[1] + Dy
                     # Mark grid point as obstacle (try/except bc point could be off the map)
                     try:
                         if (Px >= 0 and Py >= 0):
