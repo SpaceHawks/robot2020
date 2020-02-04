@@ -18,18 +18,27 @@ class SpacehawksHokuyoLXWrapper:
 #for an object that represents a lidar used for location tracking
 class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 
+	REFLECTIVITY_THRESHOLD = 3000
+	
 	def __init__(self):
+		# default constructor for locater object
 		super().__init__()
 		self.x_coordinate = 0.0
 		self.y_coordinate = 0.0
 		self.orientation = 0.0
 
 	def update(self):
-		REFLECTIVITY_THRESHOLD = 3000
+		REFLECTIVITY_THRESHOLD = SpacehawksHokuyoLXLocater.REFLECTIVITY_THRESHOLD
+		# get a python list of all data-points with angle, dist,
+		#	and reflective intensity
 		data_points = super().get_intens()
-		looking_for_brighter = True
+		
+		# detect using an FSM to find the changing points on target
 		list_of_target_points = []
-		points_left = 3
+		# True -  Target is |Bright|Black|Bright|Black|
+		# False - Target is |Black|Bright|Black|Bright|
+		looking_for_brighter = True
+		points_left = 3 	# we only want 3 points
 		for data_point in data_points:
 			if looking_for_brighter and points_left > 0:
 				if data_point[2] > REFLECTIVITY_THRESHOLD:
@@ -41,27 +50,50 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 					list_of_target_points.append(data_point)
 					looking_for_brighter = True
 					points_left -= 1
+					
+		# FIXME remove print once debugging is done
+		print("___________________________________________")
+		print("___________________________________________")
+		print("list of target points")
 		print(list_of_target_points)
+		print("___________________________________________")
+		
+		
 		distance_to_origin = list_of_target_points[1][1]
+		origin_point_angle = list_of_target_points[1][0]
 		distance_to_helper = list_of_target_points[0][1]
 		angle_difference = abs(list_of_target_points[1][0] - list_of_target_points[0][0])
 		
-		# we have to calculate stripe width because the readings aren't 
-		#	100% accurate
+		# we have to calculate stripe width because the readings
+		#	aren't 100% accurate
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
-		print(stripe_width)
+		print("stripe width:\t\t" + str(stripe_width))
 		
 		# FIX ME problem where the arcsine only takes a certain 
-		#	range of values - need to work around and transform some values
-		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width) 
+		#	range of values - need to work around and transform 
+		# 	some values
+		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
 		x_factor = -1 
-		print(origin_angle)
-		if origin_angle > (math.pi)/2:
+		
+		# FIXME debugging origin angle print in degrees
+		print("origin angle:\t\t" + str(origin_angle * (180/math.pi)))
+		print("origin point angle:\t" + str(origin_point_angle * (180/math.pi)))
+		print("___________________________________________")
+		
+		# x_factor will modify the calculated x-coord depending on angle of
+		# 	origin data point
+		if origin_point_angle < 0:
 			x_factor = 1
-			origin_angle = math.pi - origin_angle
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
-		print(x_coordinate, y_coordinate)
+		
+		# calculate orientation
+		orientation = 0.0
+		
+		# assign calculated values to the properties of the locater
+		self.x_coordinate = x_coordinate
+		self.y_coordinate = y_coordinate
+		self.orientation = orientation
 
 	def getX(self):
 		return self.x_coordinate
@@ -72,6 +104,15 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 	def getOrientation(self):
 		return self.orientation
 
+# tests for SpacehawksHokuyoLXLocater class
+def test_locater():
+	locater= SpacehawksHokuyoLXLocater()
+	locater.update()
+	print("x-coord:\t\t" + str(locater.getX()))
+	print("y-coord:\t\t" + str(locater.getY()))
+	print("orientation:\t\t" + str(locater.getOrientation()))
+	return
+		
 #for a lidar used for obstacle detection
 class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
 	def __init__(self):
@@ -97,8 +138,10 @@ class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
 	def get_danger_coords(self):
 		#return python 2d list of danger coords
 		pass
-			
 
-#test code
-#variable = SpacehawksHokuyoLXLocater()
-#variable.update()
+#test code	
+print("")	
+test_locater()
+print("___________________________________________")
+print("___________________________________________")
+print("")
