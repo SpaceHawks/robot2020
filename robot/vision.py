@@ -45,9 +45,15 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		distance_to_origin = list_of_target_points[1][1]
 		distance_to_helper = list_of_target_points[0][1]
 		angle_difference = abs(list_of_target_points[1][0] - list_of_target_points[0][0])
+		
+		# we have to calculate stripe width because the readings aren't 
+		#	100% accurate
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
 		print(stripe_width)
-		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width)) #fix me (asin gives value b/w pi/2 and -pi/2) 
+		
+		# FIX ME problem where the arcsine only takes a certain 
+		#	range of values - need to work around and transform some values
+		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width) 
 		x_factor = -1 
 		print(origin_angle)
 		if origin_angle > (math.pi)/2:
@@ -68,8 +74,31 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 
 #for a lidar used for obstacle detection
 class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
-	pass
+	def __init__(self):
+		super().__init__()
+		self.danger_points = []
+		
+	def update(self):
+		# get all points from the basic get_dist() function
+		all_points = super().get_dist()
+		
+		# narrow them down with trig and filtering
+		
+		#for every point in all_points
+		for data_point in all_points:
+			# calculate what an acceptable height deviance is
+			# calculate the height of this data point
+			# compare: if greater than threshold,calculate the coord and add to prelim_danger_coords
+			pass
+		# give prelim_danger_coords to danger_coords
+		
+		return
+		
+	def get_danger_coords(self):
+		#return python 2d list of danger coords
+		pass
+			
 
 #test code
-variable = SpacehawksHokuyoLXLocater()
-variable.update()
+#variable = SpacehawksHokuyoLXLocater()
+#variable.update()
