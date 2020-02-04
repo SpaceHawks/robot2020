@@ -14,7 +14,7 @@ def accept_connections(proc):
 
     # listen for new requests
     def listen():
-        start_server = websockets.serve(respond, port=8080)
+        start_server = websockets.serve(respond, "localhost", port=8080)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()
 
