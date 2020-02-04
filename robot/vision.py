@@ -51,12 +51,10 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 					looking_for_brighter = True
 					points_left -= 1
 					
-		# FIXME remove print once debugging is done
-		print("___________________________________________")
-		print("___________________________________________")
-		print("list of target points")
-		print(list_of_target_points)
-		print("___________________________________________")
+		#FIXME debugging print statement
+		# print("list of target points")
+		# print(list_of_target_points)
+		# print("___________________________________________")
 		
 		
 		distance_to_origin = list_of_target_points[1][1]
@@ -67,18 +65,17 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		# we have to calculate stripe width because the readings
 		#	aren't 100% accurate
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
-		print("stripe width:\t\t" + str(stripe_width))
 		
-		# FIX ME problem where the arcsine only takes a certain 
-		#	range of values - need to work around and transform 
-		# 	some values
+		#FIXME debugging print statement
+		# print("stripe width:\t\t" + str(stripe_width))
+		
 		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
 		x_factor = -1 
 		
-		# FIXME debugging origin angle print in degrees
-		print("origin angle:\t\t" + str(origin_angle * (180/math.pi)))
-		print("origin point angle:\t" + str(origin_point_angle * (180/math.pi)))
-		print("___________________________________________")
+		#FIXME debugging print statement
+		# print("origin angle:\t\t" + str(origin_angle * (180/math.pi)))
+		# print("origin point angle:\t" + str(origin_point_angle * (180/math.pi)))
+		# print("___________________________________________")
 		
 		# x_factor will modify the calculated x-coord depending on angle of
 		# 	origin data point
@@ -88,7 +85,7 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
 		
 		# calculate orientation
-		orientation = 0.0
+		orientation = (math.pi/2) - origin_angle - origin_point_angle
 		
 		# assign calculated values to the properties of the locater
 		self.x_coordinate = x_coordinate
@@ -110,7 +107,7 @@ def test_locater():
 	locater.update()
 	print("x-coord:\t\t" + str(locater.getX()))
 	print("y-coord:\t\t" + str(locater.getY()))
-	print("orientation:\t\t" + str(locater.getOrientation()))
+	print("orientation:\t\t" + str(locater.getOrientation() * (180/math.pi)))
 	return
 		
 #for a lidar used for obstacle detection
@@ -140,8 +137,12 @@ class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
 		pass
 
 #test code	
-print("")	
+print("")
+print("___________________________________________")
+print("___________________________________________")
+	
 test_locater()
+
 print("___________________________________________")
 print("___________________________________________")
 print("")
