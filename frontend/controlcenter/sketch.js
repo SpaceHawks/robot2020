@@ -86,7 +86,7 @@ async function sendXBOX(name) {
 			return send("AD", `${leftY},${leftX}`);
 		}
 		else {
-			let right = await (await fetch("http://localhost:3000/right")).json();
+			let right = await (await fetch("http://localhost:3000/rightX")).json();
 			return send("TD", `${leftY},${right}`);
 		}
 	} catch(e) {}
