@@ -7,15 +7,15 @@ const shortStates = ["TD", "AD", "AI"];
 
 let msgs = [];
 
-ws = {send: outputConsole};
-
 let panels = [];
 
 function setup() {
-	// ws = new WebSocket("ws://:8080");
-	// ws.onmessage = msg => {
-    // 	msgs.push(msg.data);
-	// };
+	ws = {send: console.log};
+// new WebSocket("ws://:8080");
+//	ws.onmessage = msg => {
+//  		console.log("Got message: ", msg.data);
+//		msgs.push(msg.data);
+//	};
 	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
 		.addButton("Tank Drive", ()=>handlePress("TD"))
 		.addButton("Arcade Drive", ()=>handlePress("AD"))
@@ -79,14 +79,14 @@ function handleStateChange(oldState, newState) {
 // Makes the appropriate requests for Arcade/Tank Drive
 async function sendXBOX(name) {
 	try {
-		let leftY = 2//await (await fetch("http://localhost:8000/leftY")).json();
+		let leftY = await (await fetch("http://localhost:3000/leftY")).json();
 
 		if (name === "AD") {
-			leftX = 5//await (await fetch("http://localhost:8000/leftX")).json();
+			leftX = await (await fetch("http://localhost:3000/leftX")).json();
 			return send("AD", `${leftY},${leftX}`);
 		}
 		else {
-			let right = 6//await (await fetch("http://localhost:8000/right")).json();
+			let right = await (await fetch("http://localhost:3000/right")).json();
 			return send("TD", `${leftY},${right}`);
 		}
 	} catch(e) {}

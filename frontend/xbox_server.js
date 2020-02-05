@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 
 let xbox = require('node-xboxdrv')
 let controller = new xbox('045e','0719', 'xbox360-wireless')
