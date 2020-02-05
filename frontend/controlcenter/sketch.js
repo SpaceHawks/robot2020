@@ -7,15 +7,15 @@ const shortStates = ["TD", "AD", "AI"];
 
 let msgs = [];
 
-ws = {send: outputConsole};
-
 let panels = [];
 
 function setup() {
-	// ws = new WebSocket("ws://:8080");
-	// ws.onmessage = msg => {
-    // 	msgs.push(msg.data);
-	// };
+	ws = {send: console.log};
+// new WebSocket("ws://:8080");
+//	ws.onmessage = msg => {
+//  		console.log("Got message: ", msg.data);
+//		msgs.push(msg.data);
+//	};
 	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
 		.addButton("Tank Drive", ()=>handlePress("TD"))
 		.addButton("Arcade Drive", ()=>handlePress("AD"))
