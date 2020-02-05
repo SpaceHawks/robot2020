@@ -79,14 +79,14 @@ function handleStateChange(oldState, newState) {
 // Makes the appropriate requests for Arcade/Tank Drive
 async function sendXBOX(name) {
 	try {
-		let leftY = 2//await (await fetch("http://localhost:8000/leftY")).json();
+		let leftY = await (await fetch("http://localhost:3000/leftY")).json();
 
 		if (name === "AD") {
-			leftX = 5//await (await fetch("http://localhost:8000/leftX")).json();
+			leftX = await (await fetch("http://localhost:3000/leftX")).json();
 			return send("AD", `${leftY},${leftX}`);
 		}
 		else {
-			let right = 6//await (await fetch("http://localhost:8000/right")).json();
+			let right = await (await fetch("http://localhost:3000/right")).json();
 			return send("TD", `${leftY},${right}`);
 		}
 	} catch(e) {}
