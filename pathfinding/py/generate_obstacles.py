@@ -67,7 +67,8 @@ def generate_obstacles():
     #
     #   ACTUAL 3D PART
     #
-    obs = [[[False for a in range(0, 12)] for y in range(1+height//5)] for x in range(1+width//5)]
+    # obs = [[[False for a in range(0, 12)] for y in range(1+height//5)] for x in range(1+width//5)]
+    obs = numpy.zeros((1+width//5, 1+height//5, 12), dtype="bool").tolist()
 
 
     for ang in range(0, 12):
