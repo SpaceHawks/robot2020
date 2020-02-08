@@ -69,5 +69,5 @@ def generate_obstacles():
                     except IndexError:
                         pass
 
-    print([(c[0]//5, c[1]//5) for c in centers])
+    # print([(c[0]//5, c[1]//5) for c in centers])
     return obs

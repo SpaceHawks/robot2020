@@ -1,6 +1,7 @@
 import math
 import heapq
 from collections import defaultdict
+from runprofiler import runprofiler
 
 degreeMap = {
     0: [-3, 1],
@@ -26,6 +27,7 @@ def reconstruct_path(cameFrom, current):
 
     return path
 
+@runprofiler
 def A_star(start, goal, obstacles, width=72, height=108):
     # G and H score dicts
     g = defaultdict(lambda: 10000000000000)
