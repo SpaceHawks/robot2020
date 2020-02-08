@@ -1,4 +1,5 @@
 import math
+import heapq
 from collections import defaultdict
 
 degreeMap = {
@@ -16,7 +17,20 @@ degreeMap = {
     165: [1, 0],
 }
 
-def A_star(start, goal, obstacles):
+def reconstruct_path(cameFrom, current):
+    path = [current]
+
+    while current.id in cameFrom:
+        path = [current] + path
+        current = cameFrom[current.id]
+
+    return path
+
+def A_star(start, goal, obstacles, width=72, height=108):
+    # G and H score dicts
+    g = defaultdict(lambda: 10000000000000)
+    f = defaultdict(lambda: 10000000000000)
+
     # Distance between nodes (manhattan dist. + angle diff)
     d = lambda n1, n2: abs(n2.y - n1.y) + abs(n2.x - n1.x) + abs(n2.a - n1.a)
     """ HEURISTIC
@@ -35,8 +49,8 @@ def A_star(start, goal, obstacles):
             self.a = a
             self.id = self.x * height * 12 + self.y * 12 + ((self.a + 75) // 15)
 
-        def get_neighbors():
-            delta = degreeMap[this.a + 75]
+        def get_neighbors(self):
+            delta = degreeMap[self.a + 75]
             neighbors = []
             # Move forward
             neighbors.append(Node(x = self.x + delta[0], y = self.y + delta[1], a = self.a))
@@ -47,22 +61,55 @@ def A_star(start, goal, obstacles):
             # Turn left
             neighbors.append(Node(x = self.x, y = self.y, a = self.a - 15))
 
-            return [n for n in neighbors if n.isValid()]
+            return [n for n in neighbors if n.is_valid()]
 
-        def isValid():
+        def is_valid(self):
             if self.x <= 0 or self.x >= width:
                 return False
             if self.y <= 0 or self.y >= height:
                 return False
             if self.a < -75 or self.a > 90:
                 return False
-            return not obstacles[self.x][self.y][self.a+75]
+            return not obstacles[self.x][self.y][(self.a+75)//15]
 
+        # Determines how priority queue sorts
+        def __lt__(self, other):
+            return f[self.id] < f[other.id]
 
-    g = defaultdict(lambda: math.inf)
-    f = defaultdict(lambda: math.inf)
+        def __repr__(self):
+            return f"({self.x}, {self.y})"
 
     start = Node(start.x, start.y, 0)
 
     g[start.id] = 0
     f[start.id] = h(start)
+
+    openSet = [] # Priority Queue Heap
+    ids = {}
+
+    heapq.heappush(openSet, start)
+    ids[start.id] = True
+
+    cameFrom = {}
+
+    while len(openSet) > 0:
+        current = heapq.heappop(openSet)
+        if current.id in ids:
+            del ids[current.id]
+
+        # End condition
+        if current.y <= goal.y:
+            return reconstruct_path(cameFrom, current)
+
+        for neighbor in current.get_neighbors():
+            tentative_gScore = g[current.id] + d(current, neighbor)
+            if tentative_gScore < g[neighbor.id]:
+                cameFrom[neighbor.id] = current
+                g[neighbor.id] = tentative_gScore
+                f[neighbor.id] = tentative_gScore + h(neighbor)
+                if neighbor.id not in ids:
+                    ids[neighbor.id] = True
+                    heapq.heappush(openSet, neighbor)
+
+    # No solution
+    return []

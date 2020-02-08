@@ -1,5 +1,4 @@
 import math, random, numpy
-from runprofiler import runprofiler
 
 
 # Some relevant definitions
@@ -15,7 +14,6 @@ endy = 1
 width = 360
 height = 540
 
-@runprofiler
 def generate_obstacles():
     #
     #    THIS PART JUST RANDOMLY GENERATES OBSTACLES
@@ -67,7 +65,7 @@ def generate_obstacles():
                     # Mark grid point as obstacle (try/except bc point could be off the map)
                     try:
                         if (Px >= 0 and Py >= 0):
-                            obs[Px][Py][ang] = True;
+                            obs[Px][Py][ang] = True
                     except IndexError:
                         pass
 
