@@ -1,5 +1,6 @@
 import math, random, numpy
-import cProfile, pstats, io
+from runprofiler import runprofiler
+
 
 # Some relevant definitions
 rw = 50
@@ -14,27 +15,7 @@ endy = 1
 width = 360
 height = 540
 
-def profile(fnc):
-
-    """A decorator that uses cProfile to profile a function"""
-
-    def inner(*args, **kwargs):
-
-        pr = cProfile.Profile()
-        pr.enable()
-        retval = fnc(*args, **kwargs)
-        pr.disable()
-        s = io.StringIO()
-        sortby = 'cumulative'
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        print(s.getvalue())
-        return retval
-
-    return inner
-
-
-@profile
+@runprofiler
 def generate_obstacles():
     #
     #    THIS PART JUST RANDOMLY GENERATES OBSTACLES
