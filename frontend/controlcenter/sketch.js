@@ -14,7 +14,7 @@ function setup() {
 	// ws = {send: console.log};
 
 	const ip = prompt("What IP is robot on?", "192.168.1.127");
-	ws = new WebSocket(`ws://${ip}:8080`);
+	ws = {send: console.log}//new WebSocket(`ws://${ip}:8080`);
 	ws.onmessage = msg => {
  		console.log("Got message: ", msg.data);
 		msgs.push(msg.data);
@@ -101,7 +101,7 @@ async function sendXBOX(name) {
 			leftX = await (await fetch("http://localhost:3000/leftX")).json();
 			return send("AD", `${leftY},${leftX}`);
 		} else {
-			let right = await (await fetch("http://localhost:3000/rightY")).json();
+			let right = await (await fetch("http://localhost:3000/rightX")).json();
 			return send("TD", `${leftY},${right}`);
 		}
 	} catch(e) {}
