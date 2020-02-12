@@ -145,6 +145,3 @@ window.onresize = function(event) {
 		panel.setPosition(document.body.clientWidth - curWidth - 50, curY);
 	}
 };
-
-
-setup();
