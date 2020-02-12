@@ -50,14 +50,14 @@ class DriveTrain:
         l = (v + w) / 2
         r = (v - w) / 2
         # send tank drive command
-        motors.tank_drive(l, r)
+        DriveTrain.tank_drive(l, r)
 
     @staticmethod
     def tank_drive(left_percent, right_percent):
-        motors.set_motor_speed(0, left_percent)
-        motors.set_motor_speed(1, left_percent)
-        motors.set_motor_speed(2, right_percent)
-        motors.set_motor_speed(3, right_percent)
+        DriveTrain.set_motor_speed(0, left_percent)
+        DriveTrain.set_motor_speed(1, left_percent)
+        DriveTrain.set_motor_speed(2, right_percent)
+        DriveTrain.set_motor_speed(3, right_percent)
         motor_speeds = [left_percent, left_percent, right_percent, right_percent]
 
 class Trenchdigger:
