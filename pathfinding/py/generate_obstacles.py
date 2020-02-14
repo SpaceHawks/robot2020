@@ -1,6 +1,5 @@
 import math, random, numpy
 
-
 # Some relevant definitions
 rw = 50
 rh = 100
