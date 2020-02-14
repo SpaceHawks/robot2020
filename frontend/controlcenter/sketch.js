@@ -21,7 +21,7 @@ function setup() {
 	// ws = {send: console.log};
 
 	const ip = prompt("What IP is robot on?", "192.168.1.127");
-	ws = new WebSocket(`wss://connect.websocket.in/v2/1?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjI0YzBlMjIyODVjYWVjN2VhODRlNWI3NGViMWMzM2M2MzlmOTk3MjdjNWJlNjcyYWY5YThjOTE4OTc0NGIyMGNlNzRlZjliOGI0ZTRlYmViIn0.eyJhdWQiOiI4IiwianRpIjoiMjRjMGUyMjI4NWNhZWM3ZWE4NGU1Yjc0ZWIxYzMzYzYzOWY5OTcyN2M1YmU2NzJhZjlhOGM5MTg5NzQ0YjIwY2U3NGVmOWI4YjRlNGViZWIiLCJpYXQiOjE1ODE2NDAxMDQsIm5iZiI6MTU4MTY0MDEwNCwiZXhwIjoxNjEzMjYyNTA0LCJzdWIiOiI1MTEiLCJzY29wZXMiOltdfQ.pvdMxOtuQ19RyF_-3XDFb1r8WxL0M51hC6aIjHDMrbzFrluZ71eHXmCN7arW0cwUv5Tnvtunb3_h-lSa526hNDEAPoK_fcQb7qH-Qes8Cgbf6hPKlvHsd92l5UkD9f0rVtR6ggYpLqFVjx77A0ZYwFZqhig7b2C6mQJw38BvrDiTtCe1k4h__xC4jse3FK7BFC_0QCA1WHQaBoOuqA6ApI3KbCXxt1tqOIauCYbSTlAnT5S9Cc2gQ7A_dBltdj2fagvmgFNnfXG9DkitECm906P6qh-znB6vJ-xYVfkM0FShxpt0xE3OytiIt2HSruUFc3Hz4DSNqOKOYA7aX7NN7561NIka5HjdoPjcmRCP4Dth1HLmRwLin91uSt5YFuv7du5AejczpiSNb_DDjjCwR5lQx6wMDXy4FJdEeoSapS0BZCackMa0g9ypr7XRlXnroWCfrmuX9Ky4U-z__z_miDwwQhMUD2hdYWoa8xMZTDD2lK8w4jLfneqsLfTsTAJYbmvLt14JvCr4RxYKzsylWURW4BCH9n4O3r5So2o1bEt_26MZQDPDLJlhkRp14Piz3H4n145kpunwpOQ32-ToMK2TmeMmn0JHW5-PlGV4ElKN4T34GUQ45wTpt_aYedTad-sUubpccxe9PQRSs3ECSA1vJA_2-Bl-P-zsD6CF9bE`);
+	ws = new WebSocket(`ws://${ip}:8080`);
 	ws.onmessage = gotMessage;
 
 	ws.onclose = msg => {
@@ -228,7 +228,7 @@ function gotMessage(msg) {
 
 // Auto-move panels on resize
 window.onresize = function (event) {
-	if (!generalSettings.getValue("Snap panels right")) { {
+	if (!generalSettings.getValue("Snap panels right")) {
 		return;
 	}
 	for (const p in panels) {
