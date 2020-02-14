@@ -14,11 +14,24 @@ function setup() {
 	// ws = {send: console.log};
 
 	const ip = prompt("What IP is robot on?", "192.168.1.127");
-	ws = {send: console.log}//new WebSocket(`ws://${ip}:8080`);
+	ws = new WebSocket(`ws://${ip}:8080`);
 	ws.onmessage = msg => {
  		console.log("Got message: ", msg.data);
 		msgs.push(msg.data);
 	};
+
+	ws.onclose = msg => {
+		console.log(msg, /CLOSE/)
+	}
+
+	ws.onerror = msg => {
+		console.log(msg, /ERROR/)
+	}
+
+	ws.sendLog = msg => {
+
+	}
+
 
 	//
 	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
@@ -109,10 +122,14 @@ async function sendXBOX(name) {
 
 // send data over WebSocket
 async function send(name, data) {
-	if (data)
+	if (data) {
+		outputConsole(`${name}:${data}`)
 		return ws.send(`${name}:${data}`);
-	else
+	} else {
+		outputConsole(name)
 		return ws.send(name);
+	}
+
 }
 
 
