@@ -10,17 +10,17 @@ app.use(function(req, res, next) {
 });
 
 let xbox = require('./node-xboxdrv');
-let controller = new xbox('045e', '0719', { type: 'xbox360-wireless' });
+let controller = new xbox('045e', '0719', { type: 'xbox360-wireless', deadzone: 10000 });
 
 let values = { leftX: 0, leftY: 0, rightX: 0, rightY: 0 };
 
 controller.on('leftX', data => {
-	values.leftX = (100 * data / 32768)
+	values.leftX = Math.round(100 * data / 32768)
 	console.log(data);
 });
-controller.on('leftY', data => values.leftY = (100 * data / 32768));
-controller.on('rightX', data => values.rightX = (100 * data / 32768));
-controller.on('rightY', data => values.rightY = (100 * data / 32768));
+controller.on('leftY', data => values.leftY = Math.round(100 * data / 32768));
+controller.on('rightX', data => values.rightX = Math.round(100 * data / 32768));
+controller.on('rightY', data => values.rightY = Math.round(100 * data / 32768));
 
 app.get('/', (req, res) => res.send(`Server is running!`));
 

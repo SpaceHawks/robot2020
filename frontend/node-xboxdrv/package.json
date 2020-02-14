@@ -1,0 +1,79 @@
+{
+  "_args": [
+    [
+      "node-xboxdrv",
+      "/home/matte_0/Documents/GitHub/robot2020/frontend/controlcenter"
+    ]
+  ],
+  "_from": "node-xboxdrv@latest",
+  "_id": "node-xboxdrv@0.2.2",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/node-xboxdrv",
+  "_npmUser": {
+    "email": "AntonAf@outlook.com",
+    "name": "jabbath"
+  },
+  "_npmVersion": "1.4.28",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "node-xboxdrv",
+    "raw": "node-xboxdrv",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/node-xboxdrv/-/node-xboxdrv-0.2.2.tgz",
+  "_shasum": "5b9c8eb2b9de18d63aa89d3be5b8ed69d08e3db8",
+  "_shrinkwrap": null,
+  "_spec": "node-xboxdrv",
+  "_where": "/home/matte_0/Documents/GitHub/robot2020/frontend/controlcenter",
+  "author": {
+    "email": "antonaf@outlook.com",
+    "name": "Anton Afanassiev",
+    "url": "https://github.com/Jabbath"
+  },
+  "bugs": {
+    "url": "https://github.com/Jabbath/node-xboxdrv/issues"
+  },
+  "dependencies": {},
+  "description": "A node module to create bindings for xboxdrv to provide controller input on linux",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "5b9c8eb2b9de18d63aa89d3be5b8ed69d08e3db8",
+    "tarball": "https://registry.npmjs.org/node-xboxdrv/-/node-xboxdrv-0.2.2.tgz"
+  },
+  "gitHead": "1933f20ee0ec882c1320f9015219fb6578fee576",
+  "homepage": "https://github.com/Jabbath/node-xboxdrv",
+  "keywords": [
+    "360",
+    "bindings",
+    "controller",
+    "xbox",
+    "xboxdrv"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "maintainers": [
+    {
+      "name": "jabbath",
+      "email": "AntonAf@outlook.com"
+    }
+  ],
+  "name": "node-xboxdrv",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jabbath/node-xboxdrv.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.2.2"
+}
