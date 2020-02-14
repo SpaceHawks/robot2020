@@ -4,7 +4,7 @@ from generate_obstacles import generate_obstacles
 from a_star import A_star
 
 # False = average run time, True = show plot
-mode = True
+mode = False
 
 class Point:
     def __init__(self, x, y):

@@ -54,25 +54,58 @@ def A_star(start, goal, obstacles, width=72, height=108):
         def get_neighbors(self):
             delta = degreeMap[self.a + 75]
             neighbors = []
-            # Move forward
-            neighbors.append(Node(x = self.x + delta[0], y = self.y + delta[1], a = self.a))
-            # Move backward
-            neighbors.append(Node(x = self.x - delta[0], y = self.y - delta[1], a = self.a))
-            # Turn right
-            neighbors.append(Node(x = self.x, y = self.y, a = self.a + 15))
-            # Turn left
-            neighbors.append(Node(x = self.x, y = self.y, a = self.a - 15))
 
-            return [n for n in neighbors if n.is_valid()]
+            norm_a = self.a // 15
+            # Move forward
+            try:
+                if self.x + delta[0] >= 0:
+                    obs = obstacles[self.x + delta[0]][self.y + delta[1]][norm_a+5]
+                    if not obs:
+                        neighbors.append(Node(x = self.x + delta[0], y = self.y + delta[1], a = self.a))
+            except:
+                pass
+            # Move backward
+            try:
+                if self.x - delta[0] >= 0 and self.y - delta[1] >= 0:
+                    obs = obstacles[self.x - delta[0]][self.y - delta[1]][norm_a+5]
+                    if not obs:
+                        neighbors.append(Node(x = self.x - delta[0], y = self.y - delta[1], a = self.a))
+            except:
+                pass
+            # Turn right
+            try:
+                obs = obstacles[self.x][self.y][norm_a+6]
+                if not obs:
+                    neighbors.append(Node(x = self.x, y = self.y, a = self.a + 15))
+            except:
+                pass
+            # Turn left
+            try:
+                if norm_a + 4 >= 0:
+                    obs = obstacles[self.x][self.y][norm_a+4]
+                    if not obs:
+                        neighbors.append(Node(x = self.x, y = self.y, a = self.a - 15))
+            except:
+                pass
+
+            return neighbors#[n for n in neighbors if n.is_valid()]
 
         def is_valid(self):
-            if self.x <= 0 or self.x >= width:
+            try:
+                if self.x >= 0 and self.y >= 0 and self.a+75 >= 0:
+                    obs = obstacles[self.x][self.y][(self.a+75)//15]
+                    return not obs
+                else:
+                    return False
+            except IndexError:
                 return False
-            if self.y <= 0 or self.y >= height:
-                return False
-            if self.a < -75 or self.a > 90:
-                return False
-            return not obstacles[self.x][self.y][(self.a+75)//15]
+            # if self.x <= 0 or self.x >= width:
+            #     return False
+            # if self.y <= 0 or self.y >= height:
+            #     return False
+            # if self.a < -75 or self.a > 90:
+            #     return False
+            # return not obstacles[self.x][self.y][(self.a+75)//15]
 
         # Determines how priority queue sorts
         def __lt__(self, other):
