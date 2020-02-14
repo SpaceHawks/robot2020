@@ -42,6 +42,11 @@ def generate_obstacles():
 
             obstacles.append((round(px/5), round(py/5)))
 
+    # Add walls
+    for y in range(0, 108, 10):
+        obstacles.append((0, y))
+        obstacles.append((72, y))
+
     #
     #   ACTUAL 3D PART
     #

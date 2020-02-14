@@ -28,21 +28,25 @@ def reconstruct_path(cameFrom, current):
     return path
 
 @runprofiler
-def A_star(start, goal, obstacles, width=72, height=108):
+def A_star(start, goal, obstacles, width=72, height=108, grid_size=5):
     # G and H score dicts
     g = defaultdict(lambda: 10000000000000)
     f = defaultdict(lambda: 10000000000000)
 
     # Distance between nodes (manhattan dist. + angle diff)
-    d = lambda n1, n2: abs(n2.y - n1.y) + abs(n2.x - n1.x) + abs(n2.a - n1.a)
+    def d(n1, n2):
+        y_cost = 100 if n2.y < n1.y else 0
+        a_cost = 0 if abs(n2.a) < abs(n1.a) else abs(n2.a - n1.a)
+        return abs(n2.y - n1.y) + abs(n2.x - n1.x) + a_cost + y_cost
     """ HEURISTIC
         * Far away from mining area = bad
         * Further away from the center (more likely to run into walls) = bad
         * Being turned (you have to turn back + move slower towards goal) = bad
     """
     def h(n):
-        delta = degreeMap[n.a+75]
-        return abs(n.y - goal.y) + 5 * abs(goal.x - n.x) + abs(n.a)
+        delta = degreeMap[n.a + 75]
+        return abs(n.x + 4*delta[0] - goal.x) + abs(n.y + 4*delta[1] - goal.y) + abs(n.a)
+        # return (goal.y - n.y) + 5 * abs(goal.x - n.x) + abs(n.a)
 
     class Node:
         def __init__(self, x, y, a):
@@ -88,17 +92,11 @@ def A_star(start, goal, obstacles, width=72, height=108):
             except:
                 pass
 
-            return neighbors#[n for n in neighbors if n.is_valid()]
+            return neighbors#[n for n in neighbors if not n.hits_wall()]
 
-        def is_valid(self):
-            try:
-                if self.x >= 0 and self.y >= 0 and self.a+75 >= 0:
-                    obs = obstacles[self.x][self.y][(self.a+75)//15]
-                    return not obs
-                else:
-                    return False
-            except IndexError:
-                return False
+        def hits_wall(self):
+            pass
+            # return self.x >= width - 50 / grid_size or self.x <= 50 / grid_size
             # if self.x <= 0 or self.x >= width:
             #     return False
             # if self.y <= 0 or self.y >= height:
@@ -133,7 +131,7 @@ def A_star(start, goal, obstacles, width=72, height=108):
             del ids[current.id]
 
         # End condition
-        if current.y <= goal.y:
+        if current.y >= goal.y:
             return reconstruct_path(cameFrom, current)
 
         for neighbor in current.get_neighbors():
