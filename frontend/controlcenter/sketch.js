@@ -25,11 +25,12 @@ function setup() {
 	ws.onmessage = gotMessage;
 
 	ws.onclose = msg => {
-		console.log(msg, /CLOSE/)
+		alert("Websocket connection closed. Please refresh the webpage to reconnect.");
+		console.log(msg, /CLOSE/);
 	}
 
 	ws.onerror = msg => {
-		console.log(msg, /ERROR/)
+		console.log(msg, /ERROR/);
 	}
 
 	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
