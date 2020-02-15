@@ -15,7 +15,7 @@ let obstacles = []; // [{x, y}, {x, y}, ...]
 let robot = {x: ~~(200 / gridSize), y: ~~(200 / gridSize), a: 45}; // a is angle
 
 // UI components
-let panels = {};
+let panels = [];
 
 function setup() {
 	// ws = {send: console.log};
@@ -64,7 +64,7 @@ function setup() {
 		.setHeight(150)
 		.disableControl("Output");
 
-	panels = { generalSettings, driveSettings, consoleSettings };
+	panels = [ generalSettings, driveSettings, consoleSettings ];
 	createCanvas(360, 540);
 	angleMode(DEGREES);
 	rectMode(CENTER);
