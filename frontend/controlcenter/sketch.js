@@ -34,10 +34,10 @@ function setup() {
 	}
 
 	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
-		.addButton("Tank Drive", 	() => handlePress("TD"))
-		.addButton("Arcade Drive",	() => handlePress("AD"))
-		.addButton("Autonomous", 	() => handlePress("AI"))
-		.addButton("STOP", 			() => handlePress("STOP"))
+		.addButton("Tank Drive", () => handlePress("TD"))
+		.addButton("Arcade Drive",() => handlePress("AD"))
+		.addButton("Autonomous", () => handlePress("AI"))
+		.addButton("STOP", () => handlePress("STOP"))
 		.overrideStyle("STOP", "backgroundColor", "red")
 		.overrideStyle("STOP", "color", "white")
 		.setWidth(200)
