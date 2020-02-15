@@ -3,12 +3,18 @@ from matplotlib.widgets import Slider, Button
 import time, math
 from generate_obstacles import generate_obstacles
 from a_star import A_star
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--avg', '-a', action="store_true", help="Shows avg instead of plot")
+parser.add_argument('--waypoints', '-w', action="store_true", help="Only shows waypoints")
+args=parser.parse_args()
 
 # False = average run time, True = show plot
-show_plot = True
+show_plot = not args.avg
 
 # Only show points in which the robot turns, not every point along the path
-waypoints = False
+waypoints = args.waypoints
 
 # How many cm x cm?
 grid_size = 5
