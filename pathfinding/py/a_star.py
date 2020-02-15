@@ -36,7 +36,7 @@ def A_star(start, goal, obstacles, width=72, height=108, grid_size=5):
     # Distance between nodes (manhattan dist. + angle diff)
     def d(n1, n2):
         y_cost = 100 if n2.y < n1.y else 0
-        a_cost = 0 if abs(n2.a) < abs(n1.a) else abs(n2.a - n1.a)
+        a_cost = 15 if abs(n2.a) > abs(n1.a) else 0
         return abs(n2.y - n1.y) + abs(n2.x - n1.x) + a_cost + y_cost
     """ HEURISTIC
         * Far away from mining area = bad

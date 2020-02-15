@@ -22,7 +22,7 @@ def get_obs(obs, angle_drawn):
 
     for x in range(len(obs)):
         for y in range(len(obs[x])):
-            if obs[x][y][angle_drawn]:
+            if obs[x][y][10-angle_drawn]:
                 obs_x.append(x)
                 obs_y.append(y)
 
@@ -37,7 +37,7 @@ if mode:
     path_y = [p.y for p in path]
 
 
-    (obs_x, obs_y) = get_obs(obs, 0)
+    (obs_x, obs_y) = get_obs(obs, 75//15)
     fig, ax = plt.subplots(figsize=(5.4, 8.1))
     plt.subplots_adjust(left=0.1, bottom=0.35)
     p_obs, = plt.plot(obs_x, obs_y, 'o', color="green")
@@ -46,10 +46,10 @@ if mode:
     plt.axis([0, 360//grid_size, 0, 540//grid_size])
 
     ax_slider = plt.axes([0.1, 0.2, 0.8, 0.05])
-    slider = Slider(ax_slider, "Angle", valmin=-75, valmax=90, valinit=0, valstep=15)
+    slider = Slider(ax_slider, "Angle", valmin=-75, valmax=90, valinit=0, valstep=15, valfmt="%d°")
 
     def update_obs(an):
-        (obs_x, obs_y) = get_obs(obs, -int(an)//15)
+        (obs_x, obs_y) = get_obs(obs, int(an+75)//15)
         p_obs.set_data(obs_x, obs_y)
         plt.draw()
 

@@ -55,7 +55,7 @@ def generate_obstacles():
 
 
     for ang in range(0, 12):
-        angle = math.radians(15 * ang)
+        angle = math.radians(15 * ang - 75)
         c, s = math.cos(angle), math.sin(angle)
         # Check robot-sized area around obstacle to see which points collide at angle
         for x in range(-rw//2, 1+rw//2, 5):
