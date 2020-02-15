@@ -232,8 +232,7 @@ window.onresize = function (event) {
 	if (!generalSettings.getValue("Snap panels right")) {
 		return;
 	}
-	for (const p in panels) {
-		const panel = panels[p];
+	for (const panel of panels) {
 		let curY = parseInt(panel._panel.style.top.split("px")[0]);
 		let curWidth = parseInt(panel._panel.style.width.split("px")[0]);
 		panel.setPosition(document.body.clientWidth - curWidth - 50, curY);
