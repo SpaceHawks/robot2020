@@ -1,5 +1,5 @@
 // How big are the squares?
-let gridSize = 10;
+let gridSize = 5;
 
 let ws;
 let driveSettings, generalSettings, consoleSettings;
@@ -12,7 +12,7 @@ let msgs = [];
 
 // Last received robot and obstacle locations
 let obstacles = []; // [{x, y}, {x, y}, ...]
-let robot = {x: ~~(200 / gridSize), y: ~~(200 / gridSize), a: 45}; // a is angle
+let robot = {x: ~~(200 / gridSize), y: ~~(200 / gridSize), a: 0}; // a is angle
 
 // UI components
 let panels = [];
@@ -21,7 +21,7 @@ function setup() {
 	// ws = {send: console.log};
 
 	const ip = prompt("What IP is robot on?", "192.168.1.127");
-	ws = new WebSocket(`ws://${ip}:8080`);
+	ws = new WebSocket(`ws://connect.websocket.in/v2/1?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImNlNDBjNzgyMzQzZmMwZWUzZDU4ODZkOTk3NmU4NzkxMzc2ZGYyZTQ3MTY1MDgyZGI3YTg1MDM4MDgwMzQ0MjI2ZTJlNjhlMTU2MGM5YjJiIn0.eyJhdWQiOiI4IiwianRpIjoiY2U0MGM3ODIzNDNmYzBlZTNkNTg4NmQ5OTc2ZTg3OTEzNzZkZjJlNDcxNjUwODJkYjdhODUwMzgwODAzNDQyMjZlMmU2OGUxNTYwYzliMmIiLCJpYXQiOjE1ODIwNzI2NzcsIm5iZiI6MTU4MjA3MjY3NywiZXhwIjoxNjEzNjk1MDc3LCJzdWIiOiI1MTEiLCJzY29wZXMiOltdfQ.Jem3J30CpKJVyXaM9kNSR0uGuweWNTjvo9i9_Y2TwFQqzaOU4e-_dFBLIvsSDBizESgM3n_lwWKg7gRYytluQ1prD3KzIivmKt3hfasR8cfiv53lIZ7XPNtov9W4pOhJDAXydZ60F53rPf6YrWZ_QnvRvEEJK69SNo7mqsgruLqYg8KgDKmsM0YLm7TY2w0DR9DMLcrQywSvztmLXhmSxwMsxZkJ_uQmQUnvOIe5pTqFT7fdxW67E3RWCTWWP5HaRm0gnJ9B4a5aozmrpQBJ2U1Zgzk8BUagPhU9Ay5rVKQLIM6ya_MbPDSbYU-3kNdoq5vfjqam87KfcVXuLIN1BGvvpYE1bzoABNI5L5zOBNtpidqyYLvOeQl-rR-JhwWxQ2K__5VAh9-5A4i5PG5dxufvyFKFnN7FtZyXeLvEwNfoTxSC_ceHswW2nLpI-nx3lvfpFm0ICKNJKT2bc5NvrY3hLDlxK-wtja3USUHudx7rNimOiW-SMvs11JRSBa_9qXdJ1CiiFafNaqMcH6EZEjRIX3w8zICIIB_4KrRSzGwSNfQ8PSuADijbCBO8sAMjcuNo6iRmaXNdLiPJPvAEAn8vBoq0LTWwPX4eVCzPdV0wk2QNnq5qBWaHfbb6YYGrdc2FVtsH-2K-NC6EFcQqw9YCEyU2jxJlDdOsuIMd-BE`);
 	ws.onmessage = gotMessage;
 
 	ws.onclose = msg => {
