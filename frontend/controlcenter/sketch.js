@@ -223,6 +223,9 @@ function gotMessage(msg) {
 				obstacles.push({x, y, time: Date.now()});
 			} catch (e) {}
 		}
+	} else if (command === "M") {
+		let msg = args[1];
+		outputConsole(`Message: ${msg}`)
 	} else console.log(`Unknown command: ${msg.data}`);
 	msgs.push(msg.data);
 }

@@ -11,14 +11,14 @@
 
 ## Architecture
 - apart from the xbox controller, all the client functionality can be within a static HTML+CSS+JS page running browser
-- we will need a node.js application to give us the hardware access we need to use the xbox controller (xboxdrv) 
+- we will need a node.js application to give us the hardware access we need to use the xbox controller (xboxdrv)
 - robot will need a websocket daemon which might be difficult to make work with the rest of the robot
 - rn I think it makes the most sense to have the robot host the ws server, but subject to change
 
 ## Desired Functionality
 ### Map
 Show a map of the arena with all the available data. Items listed in terms of importance.
-#### Data visualization for: 
+#### Data visualization for:
 - View detected obstacles
 - View robot position
 - View planned path
@@ -59,6 +59,7 @@ This may not be needed for MVP but I can use d3.js for graphs and other data vis
 ### Communication protocol/Instructions
 |Name|Data|Example|
 |-------------|----------|-----------|
+|Message|M:message|M:Hello there|
 |Obstacle Point|O:x,y, ...|O:30,23,45,60|
 |Robot Point|R:x,y,θ|R:3,2,45|
 |Arcade Drive|AD:throttle,turn|AR:85,40|
