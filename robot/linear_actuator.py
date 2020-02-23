@@ -11,31 +11,41 @@ class DummyADC:
 
 class LinearActuator:
 
-    def __init__(self, adc: DummyADC, sabertooth, port_id):
+    def __init__(self, adc: DummyADC, sabertooth, port_id, constants=(5, 0.01, 0.1)):
         self.pos = adc.get_value()
-        self.AD = adc
+        self.adc = adc
         self.st = sabertooth
         self.id = port_id
+        
+        kp, ki, kd = constants
+        
+        self.pid = PID(kp, ki, kd, 
+                       setpoint=self.adc.get_value, 
+                       sample_time=0.01, 
+                       output_limits=(-1, 1))
+        
+        self.bal_thread = Thread(target=self._balance, args=())
+        self.bal_thread.daemon = True
+        self.bal_thread.start()
 
     def _balance(self):
-        pid = PID(setpoint=self.pos, sample_time=0.01, output_limits=(-1, 1))
         # PID.sample_time = 0.01
         # PID.setpoint = adc
         # PID.output_limits = (-1, 1)
+        v = self.pid.update(0)
         while True:
-            self.AD = pid.__call__(self.AD)
-
-
+            control = self.pid(v)
+            v = self.pid.update(control)
+                   
+           
 class LinearActuatorPair:
 
     def __init__(self, position, la1, la2):
         self.pos = position
-        self.LinAc1 = la1
-        self.LinAc2 = la2
+        self.la1 = la1
+        self.la2 = la2
 
-    def set_position(self, la1, la2):
-        self.pos = la1.pos
-
-
-
-
+    def set_position(self, pos):
+        self.pos = pos
+        self.la1.pos = self.pos
+        self.la2.pos = self.pos
