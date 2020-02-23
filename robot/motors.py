@@ -58,16 +58,18 @@ class DriveTrain:
         DriveTrain.set_motor_speed(1, left_percent)
         DriveTrain.set_motor_speed(2, right_percent)
         DriveTrain.set_motor_speed(3, right_percent)
-        motor_speeds = [left_percent, left_percent, right_percent, right_percent]
+        motor_speeds = [ left_percent, left_percent, right_percent, right_percent ]
 
 class Trenchdigger:
-
     TD_speed = 0
 
+    @staticmethod
     def set_TD_speed(percent):
         TD_saber.drive(0, percent)
         TD_speed = percent
 
+    @staticmethod
     def TD_stop():
         TD_saber.drive(0, 0)
         TD_speed = 0
+
