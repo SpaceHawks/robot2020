@@ -45,7 +45,8 @@ class Locater(Wrapper):
 		else:
 			# else: on for-loop = "if break not called in for loop:"
 			# Target not found, should probably raise an exception or sumn
-			pass
+			print("Target not found")
+			return
 		print(list_of_target_points)
 		distance_to_origin = list_of_target_points[1][1]
 		distance_to_helper = list_of_target_points[0][1]
@@ -64,7 +65,7 @@ class Locater(Wrapper):
 			origin_angle = math.pi - origin_angle
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
-		print(f"x:{x_coordinate}, y:{y_coordinate}")
+		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm")
 
 	def getX(self):
 		return self.x_coordinate
