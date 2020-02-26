@@ -17,7 +17,6 @@ class Wrapper:
 
 #for an object that represents a lidar used for location tracking
 class Locater(Wrapper):
-
 	def __init__(self):
 		super()
 		self.x_coordinate = 0.0
@@ -57,8 +56,6 @@ class Locater(Wrapper):
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
 		print(stripe_width)
 
-		# FIXME: problem where the arcsine only takes a certain
-		#	range of values - need to work around and transform some values
 		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
 		x_factor = -1
 		print(origin_angle)
@@ -67,7 +64,7 @@ class Locater(Wrapper):
 			origin_angle = math.pi - origin_angle
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
-		print(x_coordinate, y_coordinate)
+		print(f"x:{x_coordinate}, y:{y_coordinate}")
 
 	def getX(self):
 		return self.x_coordinate
@@ -104,7 +101,6 @@ class Detector(Wrapper):
 		#return python 2d list of danger coords
 		pass
 
-
 #test code
-#variable = Locater()
-#variable.update()
+variable = Locater()
+variable.update()
