@@ -1,5 +1,5 @@
 from simple_pid import PID
-
+import threading
 
 class DummyADC:
     def __init__(self):
@@ -24,7 +24,7 @@ class LinearActuator:
                        sample_time=0.01, 
                        output_limits=(-1, 1))
         
-        self.bal_thread = Thread(target=self._balance, args=())
+        self.bal_thread = threading.Thread(target=self._balance, args=())
         self.bal_thread.daemon = True
         self.bal_thread.start()
 
@@ -49,3 +49,4 @@ class LinearActuatorPair:
         self.pos = pos
         self.la1.pos = self.pos
         self.la2.pos = self.pos
+    
