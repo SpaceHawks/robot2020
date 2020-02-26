@@ -19,7 +19,7 @@ class Wrapper:
 class Locater(Wrapper):
 
 	def __init__(self):
-		super().__init__()
+		super()
 		self.x_coordinate = 0.0
 		self.y_coordinate = 0.0
 		self.orientation = 0.0
