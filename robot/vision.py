@@ -18,7 +18,7 @@ class Wrapper:
 #for an object that represents a lidar used for location tracking
 class Locater(Wrapper):
 	def __init__(self):
-		super()
+		super().__init__()
 		self.x_coordinate = 0.0
 		self.y_coordinate = 0.0
 		self.orientation = 0.0
@@ -65,7 +65,7 @@ class Locater(Wrapper):
 			origin_angle = math.pi - origin_angle
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
-		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
+		print("x:{} mm, y:{} mm, a: {}".format(x_coordinate, y_coordinate, origin_angle))
 
 	def getX(self):
 		return self.x_coordinate
