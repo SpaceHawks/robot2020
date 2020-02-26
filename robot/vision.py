@@ -4,7 +4,7 @@ import numpy as np
 import math
 
 #superclass for Locater and Detector
-class SpacehawksHokuyoLXWrapper:
+class Wrapper:
 
 	def __init__(self):
 		self.lidar = HokuyoLX()
@@ -16,7 +16,7 @@ class SpacehawksHokuyoLXWrapper:
 		return self.lidar.get_filtered_intens()[1].tolist()
 
 #for an object that represents a lidar used for location tracking
-class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
+class Locater(Wrapper):
 
 	def __init__(self):
 		super().__init__()
@@ -79,7 +79,7 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		return self.orientation
 
 #for a lidar used for obstacle detection
-class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
+class Detector(Wrapper):
 	def __init__(self):
 		super().__init__()
 		self.danger_points = []
@@ -106,5 +106,5 @@ class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
 
 
 #test code
-#variable = SpacehawksHokuyoLXLocater()
+#variable = Locater()
 #variable.update()
