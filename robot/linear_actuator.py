@@ -20,8 +20,8 @@ class LinearActuator:
         kp, ki, kd = constants
         
         self.pid = PID(kp, ki, kd, 
-                       setpoint=self.adc.get_value, 
-                       sample_time=0.01, 
+                       setpoint=self.adc.get_value(), 
+                       sample_time=0.02, 
                        output_limits=(-1, 1))
         
         self.bal_thread = threading.Thread(target=self._balance, args=())
@@ -32,11 +32,14 @@ class LinearActuator:
         # PID.sample_time = 0.01
         # PID.setpoint = adc
         # PID.output_limits = (-1, 1)
-        v = self.pid.update(0)
+        v = self.ad.get_value()
         while True:
             control = self.pid(v)
-            v = self.pid.update(control)
-                   
+            self.st.drive(self.id, 100 * control)
+            v = self.ad.get_value()
+            sleep(0.01)
+            
+    
            
 class LinearActuatorPair:
 
