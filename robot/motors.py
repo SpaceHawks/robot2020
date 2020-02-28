@@ -3,6 +3,8 @@
 #from adafruit_pca9685 import PCA9685
 from pysabertooth import Sabertooth
 import busio
+import ASUS.GPIO as GPIO
+import time
 
 # each Sabertooth controls 2 motors
 l_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 128, timeout=1000)
@@ -61,6 +63,14 @@ class DriveTrain:
         motor_speeds = [left_percent, left_percent, right_percent, right_percent]
 
 class Trenchdigger:
+    //servo+potentiometer, encoder, 2 linear actuators, far forward, far back limit switches
+    def servo(angle):
+        GPIO.setmode(GPIO.ASUS)
+        GPIO.setwarnings(False)
+
+        servo = 238
+        
+
 
     TD_speed = 0
 
