@@ -5,6 +5,7 @@ from pysabertooth import Sabertooth
 import busio
 import ASUS.GPIO as GPIO
 import time
+import rotaryio
 
 # each Sabertooth controls 2 motors
 l_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 128, timeout=1000)
@@ -63,13 +64,21 @@ class DriveTrain:
         motor_speeds = [ left_percent, left_percent, right_percent, right_percent ]
 
 class Trenchdigger:
-#    def servo(angle):
-#        GPIO.setmode(GPIO.ASUS)
-#        GPIO.setwarnings(False)
-#
-#        servo = 238
-#
-#    TD_speed = 0
+# needed: servo, limit switches, encoder, poteniometer
+    TD_speed = 0
+
+    @staticmethod
+    def servo(angle):
+        dutyCycle = (angle + 45)/18 #convert degrees to duty cycle
+        GPIO.setmode(GPIO.ASUS)
+        GPIO.setwarnings(False)
+
+        servo = 32
+
+        GPIO.setup(servo,GPIO.OUT)
+        pwm = GPIO.PWM(servo,50)
+        pwm.ChangeDutyCycle(dutyCycle)
+        time.sleep(1)
 
     @staticmethod
     def set_TD_speed(percent):
@@ -80,3 +89,16 @@ class Trenchdigger:
     def TD_stop():
         TD_saber.drive(0, 0)
         TD_speed = 0
+
+    @staticmethod
+    def read_encoder():
+        enc = rotaryio.IncrementalEncoder(7, 5)
+        last_position = None
+        while True:
+            position = enc.position
+            if last_position == None or position != last_position:
+                print(position)
+            last_position = position
+
+    @staticmethod
+    def limit_switches():
