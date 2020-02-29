@@ -4,7 +4,7 @@ import numpy as np
 import math
 
 #superclass for Locater and Detector
-class SpacehawksHokuyoLXWrapper:
+class Wrapper:
 
 	def __init__(self):
 		self.lidar = HokuyoLX()
@@ -16,8 +16,7 @@ class SpacehawksHokuyoLXWrapper:
 		return self.lidar.get_filtered_intens()[1].tolist()
 
 #for an object that represents a lidar used for location tracking
-class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
-
+class Locater(Wrapper):
 	def __init__(self):
 		super().__init__()
 		self.x_coordinate = 0.0
@@ -46,7 +45,8 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		else:
 			# else: on for-loop = "if break not called in for loop:"
 			# Target not found, should probably raise an exception or sumn
-			pass
+			print("Target not found")
+			return
 		print(list_of_target_points)
 		distance_to_origin = list_of_target_points[1][1]
 		distance_to_helper = list_of_target_points[0][1]
@@ -57,8 +57,6 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
 		print(stripe_width)
 
-		# FIXME: problem where the arcsine only takes a certain
-		#	range of values - need to work around and transform some values
 		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
 		x_factor = -1
 		print(origin_angle)
@@ -67,7 +65,7 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 			origin_angle = math.pi - origin_angle
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
-		print(x_coordinate, y_coordinate)
+		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
 
 	def getX(self):
 		return self.x_coordinate
@@ -79,7 +77,7 @@ class SpacehawksHokuyoLXLocater(SpacehawksHokuyoLXWrapper):
 		return self.orientation
 
 #for a lidar used for obstacle detection
-class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
+class Detector(Wrapper):
 	def __init__(self):
 		super().__init__()
 		self.danger_points = []
@@ -104,7 +102,6 @@ class SpacehawksHokuyoLXDetector(SpacehawksHokuyoLXWrapper):
 		#return python 2d list of danger coords
 		pass
 
-
 #test code
-#variable = SpacehawksHokuyoLXLocater()
-#variable.update()
+variable = Locater()
+variable.update()
