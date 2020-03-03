@@ -47,7 +47,6 @@ class Locater(Wrapper):
 			# Target not found, should probably raise an exception or sumn
 			print("Target not found")
 			return
-		print(list_of_target_points)
 		distance_to_origin = list_of_target_points[1][1]
 		distance_to_helper = list_of_target_points[0][1]
 
@@ -59,11 +58,9 @@ class Locater(Wrapper):
 		# we have to calculate stripe width because the readings aren't
 		#	100% accurate
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
-		print(stripe_width)
 
 		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
 		x_factor = -1
-		print(origin_angle)
 		if origin_angle > (math.pi)/2:
 			x_factor = 1
 			origin_angle = math.pi - origin_angle
