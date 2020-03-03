@@ -24,22 +24,32 @@ class Locater(Wrapper):
 		self.orientation = 0.0
 
 	def update(self):
+		# How reflective is the light part of the target?
 		REFLECTIVITY_THRESHOLD = 3000
+
+		# Returns [(angle, distance, intensity), ...]
 		data_points = super().get_intens()
 		looking_for_brighter = True
-		list_of_target_points = []
+		targets = []
 		points_left = 3
-		for data_point in data_points:
+
+		"""
+		Store into targets:
+		1. Find first bright point [0]
+		2. Find next dark point [1]
+		3. Find next bright point [2]
+		"""
+		for point in data_points:
 			if points_left <= 0:
 				break
 			if looking_for_brighter:
-				if data_point[2] > REFLECTIVITY_THRESHOLD:
-					list_of_target_points.append(data_point)
+				if point[2] > REFLECTIVITY_THRESHOLD:
+					targets.append(point)
 					looking_for_brighter = False
 					points_left -= 1
 			else:
-				if data_point[2] < REFLECTIVITY_THRESHOLD:
-					list_of_target_points.append(data_point)
+				if point[2] < REFLECTIVITY_THRESHOLD:
+					targets.append(point)
 					looking_for_brighter = True
 					points_left -= 1
 		else:
@@ -47,29 +57,39 @@ class Locater(Wrapper):
 			# Target not found, should probably raise an exception or sumn
 			print("Target not found")
 			return
-		distance_to_origin = list_of_target_points[1][1]
-		distance_to_helper = list_of_target_points[0][1]
 
-		angle1 = list_of_target_points[1][0]
-		angle2 = list_of_target_points[0][0]
+		distance_to_origin = targets[1][1] # Dark point distance
+		distance_to_helper = targets[0][1] # First light point distance
+
+		angle1 = targets[1][0] # Dark point angle
+		angle2 = targets[0][0] # Light point angle
 
 		angle_difference = abs(angle1 - angle2)
 
-		# we have to calculate stripe width because the readings aren't
-		#	100% accurate
+		# TODO: This should be used to verify that we are looking at the correct area
+		#		it should be really close to the actual stripe width
+
+		# Calculate via Law of Cosines
 		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
 
+		# Math proof here https://drive.google.com/file/d/1Imi_5TYSH6YQEKciQ27xJUhhHKdNim4q/view
 		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
+
+		# Correct for sign
 		x_factor = -1
-		if origin_angle > (math.pi)/2:
+		if origin_angle > math.pi / 2:
 			x_factor = 1
 			origin_angle = math.pi - origin_angle
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
+
 		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
 		print(f"a1:{angle1 * 180 / math.pi}, a2: {angle2 * 180 / math.pi}")
 
-		self.x_coordinate, self.y_coordinate = x_coordinate, y_coordinate
+		# TODO: Finish adding orientation
+		#orientation = math.pi / 2 - angle1 - origin_angle
+
+		self.x_coordinate, self.y_coordinate, self.orientation = x_coordinate, y_coordinate, orientation
 
 	def getX(self):
 		return self.x_coordinate
