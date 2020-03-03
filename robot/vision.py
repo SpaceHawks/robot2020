@@ -67,6 +67,8 @@ class Locater(Wrapper):
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
 		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
 
+		self.x_coordinate, self.y_coordinate = x_coordinate, y_coordinate
+
 	def getX(self):
 		return self.x_coordinate
 
