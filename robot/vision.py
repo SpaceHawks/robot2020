@@ -50,7 +50,11 @@ class Locater(Wrapper):
 		print(list_of_target_points)
 		distance_to_origin = list_of_target_points[1][1]
 		distance_to_helper = list_of_target_points[0][1]
-		angle_difference = abs(list_of_target_points[1][0] - list_of_target_points[0][0])
+
+		angle1 = list_of_target_points[1][0]
+		angle2 = list_of_target_points[0][0]
+
+		angle_difference = abs(angle1 - angle2)
 
 		# we have to calculate stripe width because the readings aren't
 		#	100% accurate
@@ -66,6 +70,7 @@ class Locater(Wrapper):
 		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
 		y_coordinate = distance_to_origin*math.sin(origin_angle)
 		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
+		print(f"a1:{angle1 * 180 / math.pi}, a2: {angle2 * 180 / math.pi}")
 
 		self.x_coordinate, self.y_coordinate = x_coordinate, y_coordinate
 
