@@ -2,16 +2,22 @@
 #from board import SCL, SDA
 #from adafruit_pca9685 import PCA9685
 from pysabertooth import Sabertooth
+from analogio import AnalogIn
+import board
 import busio
 import ASUS.GPIO as GPIO
 import time
 import rotaryio
 
+#previous encoder position
+last_position = None
+
 # each Sabertooth controls 2 motors
 l_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 128, timeout=1000)
 r_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 129, timeout=1000)
 TD_saber = Sabertooth('/dev/ttyS1', baudrate=9600, address = 130, timeout=1000)
-
+potentiometer = AnalogIn(7)
+enc = rotaryio.IncrementalEncoder(7, 5)
 
 # Chassis motors
 class DriveTrain:
@@ -64,8 +70,13 @@ class DriveTrain:
         motor_speeds = [ left_percent, left_percent, right_percent, right_percent ]
 
 class Trenchdigger:
-# needed: servo, limit switches, encoder, poteniometer
+# needed: limit switches, encoder, poteniometer
     TD_speed = 0
+
+    @staticmethod
+    def set_TD_speed(percent):
+        TD_saber.drive(0, percent)
+        TD_speed = percent
 
     @staticmethod
     def servo(angle):
@@ -81,24 +92,20 @@ class Trenchdigger:
         time.sleep(1)
 
     @staticmethod
-    def set_TD_speed(percent):
-        TD_saber.drive(0, percent)
-        TD_speed = percent
-
-    @staticmethod
     def TD_stop():
         TD_saber.drive(0, 0)
         TD_speed = 0
 
     @staticmethod
-    def read_encoder():
-        enc = rotaryio.IncrementalEncoder(7, 5)
-        last_position = None
-        while True:
-            position = enc.position
-            if last_position == None or position != last_position:
-                print(position)
-            last_position = position
+    def get_encoder():
+        position = enc.position
+        last_position = position
+        print(position)
+        return position
+        time.sleep(0.25)
 
     @staticmethod
-    def limit_switches():
+    def get_pot():
+        print(potentiometer.value)      # Display value
+        return potentiometer.value
+        time.sleep(0.25)
