@@ -39,10 +39,8 @@ function xbox(pid,vid,options){
 			if(type==="axis" && changed && parseInt(input[position]) !== 0){
 				//Axis type listeners will have their callbacks take postion data
 				callback(parseInt(input[position]));
-			}
-			else if(type==="button" && changed && parseInt(input[position]) === 1){
-				//Button type listeners do not need their callbacks to take data
-				callback();
+			} else if(type==="button" && changed /* && parseInt(input[position]) === 1 */){
+				callback(parseInt(input[position]));
 			}
 
 		}
