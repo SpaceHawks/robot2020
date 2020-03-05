@@ -23,15 +23,15 @@ class Locater(Wrapper):
 		self.y_coordinate = 0.0
 		self.orientation = 0.0
 
-	def update(self):
+	def single_run(self):
 		# How reflective is the light part of the target?
 		REFLECTIVITY_THRESHOLD = 3000
 
-		# Returns [(angle, distance, intensity), ...]
+		# get_intens() returns [(angle, distance, intensity), ...]
 		data_points = super().get_intens()
 		looking_for_brighter = True
 		targets = []
-		points_left = 3
+		points_left = 6
 
 		"""
 		Store into targets:
@@ -56,40 +56,58 @@ class Locater(Wrapper):
 			# else: on for-loop = "if break not called in for loop:"
 			# Target not found, should probably raise an exception or sumn
 			print("Target not found")
+			exit()
 			return
 
-		distance_to_origin = targets[1][1] # Dark point distance
-		distance_to_helper = targets[0][1] # First light point distance
+		# Use all possible triangles to triangulate position
+		y_avg = 0
+		x_sum = 0
+		count = 0
+		for k in range(len(targets) - 1):
+			t1 = targets[k]
+			t2 = targets[k+1]
+			(_x, _y) = self.target_xy(t1, t2)
+			if y_avg != 0 and abs(_y - y_avg) > 0.25 * y_avg:
+				pass
+			else:
+				print(_y, y_avg, "\n")
+				y_avg = (y_avg * count + _y) / (count + 1)
+				x_sum += _x
+				count += 1
 
-		angle1 = targets[1][0] # Dark point angle
-		angle2 = targets[0][0] # Light point angle
+		x = x_sum / count
 
-		angle_difference = abs(angle1 - angle2)
+		return (x, y_avg)
 
-		# TODO: This should be used to verify that we are looking at the correct area
-		#		it should be really close to the actual stripe width
 
-		# Calculate via Law of Cosines
-		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
+	def target_xy(self, t1, t2):
+		[angle1, d1, _] = t1
+		[angle2, d2, _] = t2
 
-		# Math proof here https://drive.google.com/file/d/1Imi_5TYSH6YQEKciQ27xJUhhHKdNim4q/view
-		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
+		theta = abs(angle1 - angle2)
 
-		# Correct for sign
-		x_factor = -1
-		if origin_angle > math.pi / 2:
-			x_factor = 1
-			origin_angle = math.pi - origin_angle
-		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
-		y_coordinate = distance_to_origin*math.sin(origin_angle)
+		stripe_width = math.sqrt((d1**2)+(d2**2)-(2*d1*d2*math.cos(theta)))
 
-		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
-		print(f"a1:{angle1 * 180 / math.pi}, a2: {angle2 * 180 / math.pi}")
+		# alpha = math.asin(d1 * math.sin(theta) / stripe_width)
 
-		# TODO: Finish adding orientation
-		#orientation = math.pi / 2 - angle1 - origin_angle
+		y = d1 * d2 * math.sin(theta) / stripe_width
 
-		self.x_coordinate, self.y_coordinate, self.orientation = x_coordinate, y_coordinate, orientation
+		return (0, y)
+
+	def update(self):
+		ITERATIONS = 10
+
+		sum_x = 0
+		sum_y = 0
+
+		for i in range(ITERATIONS):
+			(_x, _y) = self.single_run();
+			sum_x += _x
+			sum_y += _y
+
+
+		print(f"y: {sum_y / ITERATIONS}")
+
 
 	def getX(self):
 		return self.x_coordinate
