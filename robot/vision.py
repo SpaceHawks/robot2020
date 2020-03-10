@@ -70,7 +70,6 @@ class Locater(Wrapper):
 			if y_avg != 0 and abs(_y - y_avg) > 0.25 * y_avg:
 				pass
 			else:
-				print(_y, y_avg, "\n")
 				y_avg = (y_avg * count + _y) / (count + 1)
 				x_sum += _x
 				count += 1
@@ -106,7 +105,7 @@ class Locater(Wrapper):
 			sum_y += _y
 
 
-		print(f"y: {sum_y / ITERATIONS}")
+		print(f"y: {round(0.1 * sum_y / ITERATIONS, 2)} cm")
 
 
 	def getX(self):
