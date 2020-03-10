@@ -22,6 +22,7 @@ class Locater(Wrapper):
 		self.x_coordinate = 0.0
 		self.y_coordinate = 0.0
 		self.orientation = 0.0
+		self.outlierConstant = 1.5
 
 	def single_run(self):
 		# How reflective is the light part of the target?
@@ -60,24 +61,33 @@ class Locater(Wrapper):
 			return
 
 		# Use all possible triangles to triangulate position
-		y_avg = 0
-		x_sum = 0
-		count = 0
+		xs = []
+		ys = []
 		for k in range(len(targets) - 1):
 			t1 = targets[k]
 			t2 = targets[k+1]
 			(_x, _y) = self.target_xy(t1, t2)
-			if y_avg != 0 and abs(_y - y_avg) > 0.25 * y_avg:
-				pass
-			else:
-				y_avg = (y_avg * count + _y) / (count + 1)
-				x_sum += _x
+			xs.append(_x)
+			ys.append(_y)
+
+		return (xs, ys)
+
+	def removeOutliers(self, x):
+		# Removes outliers before taking the average
+		a = np.array(x)
+		upper_quartile = np.percentile(a, 75)
+		lower_quartile = np.percentile(a, 25)
+		IQR = (upper_quartile - lower_quartile) * self.outlierConstant
+		quartileSet = (lower_quartile - IQR, upper_quartile + IQR)
+
+		y_sum = 0
+		count = 0
+		for y in a:
+			if y >= quartileSet[0] and y <= quartileSet[1]:
+				y_sum += y
 				count += 1
 
-		x = x_sum / count
-
-		return (x, y_avg)
-
+		return y_sum / count if count > 0 else 0
 
 	def target_xy(self, t1, t2):
 		[angle1, d1, _] = t1
@@ -96,16 +106,16 @@ class Locater(Wrapper):
 	def update(self):
 		ITERATIONS = 10
 
-		sum_x = 0
-		sum_y = 0
+		xs = []
+		ys = []
 
 		for i in range(ITERATIONS):
-			(_x, _y) = self.single_run();
-			sum_x += _x
-			sum_y += _y
+			(_xs, _ys) = self.single_run();
+			xs += _xs
+			ys += _ys
 
-
-		print(f"y: {round(0.1 * sum_y / ITERATIONS, 2)} cm")
+		y_avg = self.removeOutliers(ys)
+		print(f"y: {round(0.1 * y_avg, 2)} cm")
 
 
 	def getX(self):
