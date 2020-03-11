@@ -1,6 +1,6 @@
 import motors
 import tether
-
+import linear_actuator
 import sys
 
 def receive_msg(msg, conn):
@@ -35,7 +35,8 @@ def receive_msg(msg, conn):
 
     # read trench digger encoder
     elif cmd == 'ENC':
-        motors.Trenchdigger.get_encoder()
+        e = motors.Trenchdigger.get_encoder()
+        conn.send("ENC: e")
 
     # activate hopper servo
     elif cmd == 'SER':
@@ -43,12 +44,26 @@ def receive_msg(msg, conn):
 
     # read potentiometer
     elif cmd == 'POT':
-        motors.Trenchdigger.get_pot();
+        p = motors.Trenchdigger.get_pot()
+        conn.send("POT: p")
 
     #start trench digger
     elif cmd == 'DIG':
-        motors.Trenchdigger.set_TD_speed(0.75)
+        motors.Trenchdigger.set_TD_speed(1)
         print('trench digger active')
+
+    elif cmd == 'DEPLOY':
+        motors.Trenchdigger.set_TD_speed(0.5)
+        linear_actuator.LinearActuatorPair.set_position(1)
+        motors.Trenchdigger.set_TD_speed(0)
+
+    elif cmd == 'RETRACT':
+        motors.Trenchdigger.set_TD_speed(0)
+        linear_actuator.LinearActuatorPair.set_position(0)
+
+    elif cmd == 'DUMP':
+        linear_actuator.Hopper.set_hopper(1)
+        linear_actuator.Hopper.set_hopper(0)
 
     else:
         motors.DriveTrain.tank_drive(0,0)
