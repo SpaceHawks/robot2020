@@ -1,7 +1,7 @@
 // How big are the squares?
 let gridSize = 5;
 
-let ws;
+let ws, xws;
 let driveSettings, generalSettings, consoleSettings;
 let state = 2; // 0 = TD, 1 = AD, 2 = AI
 const states = ["Tank Drive", "Arcade Drive", "Autonomous"];
@@ -21,17 +21,25 @@ function setup() {
 	// ws = {send: console.log};
 
 	const ip = prompt("What IP is robot on?", "192.168.1.127");
-	ws = new WebSocket(`ws://connect.websocket.in/v2/1?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImNlNDBjNzgyMzQzZmMwZWUzZDU4ODZkOTk3NmU4NzkxMzc2ZGYyZTQ3MTY1MDgyZGI3YTg1MDM4MDgwMzQ0MjI2ZTJlNjhlMTU2MGM5YjJiIn0.eyJhdWQiOiI4IiwianRpIjoiY2U0MGM3ODIzNDNmYzBlZTNkNTg4NmQ5OTc2ZTg3OTEzNzZkZjJlNDcxNjUwODJkYjdhODUwMzgwODAzNDQyMjZlMmU2OGUxNTYwYzliMmIiLCJpYXQiOjE1ODIwNzI2NzcsIm5iZiI6MTU4MjA3MjY3NywiZXhwIjoxNjEzNjk1MDc3LCJzdWIiOiI1MTEiLCJzY29wZXMiOltdfQ.Jem3J30CpKJVyXaM9kNSR0uGuweWNTjvo9i9_Y2TwFQqzaOU4e-_dFBLIvsSDBizESgM3n_lwWKg7gRYytluQ1prD3KzIivmKt3hfasR8cfiv53lIZ7XPNtov9W4pOhJDAXydZ60F53rPf6YrWZ_QnvRvEEJK69SNo7mqsgruLqYg8KgDKmsM0YLm7TY2w0DR9DMLcrQywSvztmLXhmSxwMsxZkJ_uQmQUnvOIe5pTqFT7fdxW67E3RWCTWWP5HaRm0gnJ9B4a5aozmrpQBJ2U1Zgzk8BUagPhU9Ay5rVKQLIM6ya_MbPDSbYU-3kNdoq5vfjqam87KfcVXuLIN1BGvvpYE1bzoABNI5L5zOBNtpidqyYLvOeQl-rR-JhwWxQ2K__5VAh9-5A4i5PG5dxufvyFKFnN7FtZyXeLvEwNfoTxSC_ceHswW2nLpI-nx3lvfpFm0ICKNJKT2bc5NvrY3hLDlxK-wtja3USUHudx7rNimOiW-SMvs11JRSBa_9qXdJ1CiiFafNaqMcH6EZEjRIX3w8zICIIB_4KrRSzGwSNfQ8PSuADijbCBO8sAMjcuNo6iRmaXNdLiPJPvAEAn8vBoq0LTWwPX4eVCzPdV0wk2QNnq5qBWaHfbb6YYGrdc2FVtsH-2K-NC6EFcQqw9YCEyU2jxJlDdOsuIMd-BE`);
+	/*ws = new WebSocket(`ws://connect.websocket.in/v2/1?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImNlNDBjNzgyMzQzZmMwZWUzZDU4ODZkOTk3NmU4NzkxMzc2ZGYyZTQ3MTY1MDgyZGI3YTg1MDM4MDgwMzQ0MjI2ZTJlNjhlMTU2MGM5YjJiIn0.eyJhdWQiOiI4IiwianRpIjoiY2U0MGM3ODIzNDNmYzBlZTNkNTg4NmQ5OTc2ZTg3OTEzNzZkZjJlNDcxNjUwODJkYjdhODUwMzgwODAzNDQyMjZlMmU2OGUxNTYwYzliMmIiLCJpYXQiOjE1ODIwNzI2NzcsIm5iZiI6MTU4MjA3MjY3NywiZXhwIjoxNjEzNjk1MDc3LCJzdWIiOiI1MTEiLCJzY29wZXMiOltdfQ.Jem3J30CpKJVyXaM9kNSR0uGuweWNTjvo9i9_Y2TwFQqzaOU4e-_dFBLIvsSDBizESgM3n_lwWKg7gRYytluQ1prD3KzIivmKt3hfasR8cfiv53lIZ7XPNtov9W4pOhJDAXydZ60F53rPf6YrWZ_QnvRvEEJK69SNo7mqsgruLqYg8KgDKmsM0YLm7TY2w0DR9DMLcrQywSvztmLXhmSxwMsxZkJ_uQmQUnvOIe5pTqFT7fdxW67E3RWCTWWP5HaRm0gnJ9B4a5aozmrpQBJ2U1Zgzk8BUagPhU9Ay5rVKQLIM6ya_MbPDSbYU-3kNdoq5vfjqam87KfcVXuLIN1BGvvpYE1bzoABNI5L5zOBNtpidqyYLvOeQl-rR-JhwWxQ2K__5VAh9-5A4i5PG5dxufvyFKFnN7FtZyXeLvEwNfoTxSC_ceHswW2nLpI-nx3lvfpFm0ICKNJKT2bc5NvrY3hLDlxK-wtja3USUHudx7rNimOiW-SMvs11JRSBa_9qXdJ1CiiFafNaqMcH6EZEjRIX3w8zICIIB_4KrRSzGwSNfQ8PSuADijbCBO8sAMjcuNo6iRmaXNdLiPJPvAEAn8vBoq0LTWwPX4eVCzPdV0wk2QNnq5qBWaHfbb6YYGrdc2FVtsH-2K-NC6EFcQqw9YCEyU2jxJlDdOsuIMd-BE`);*/
+	ws = new WebSocket(`ws://${ip}:8080`);
 	ws.onmessage = gotMessage;
 
 	ws.onclose = msg => {
 		alert("Websocket connection closed. Please refresh the webpage to reconnect.");
 		console.log(msg, /CLOSE/);
-	}
+	};
 
 	ws.onerror = msg => {
 		console.log(msg, /ERROR/);
-	}
+	};
+
+	// xbox server WebSocket
+	xws = new WebSocket("127.0.0.1:8001");
+	xws.onmessage = xboxServerRecv;
+	xws.onclose = msg => {
+		alert("lost connection with the xbox sever... referesh to reconnect");
+	};
 
 	driveSettings = QuickSettings.create(document.body.clientWidth - 300, 0.4 * document.body.clientHeight, "Drive settings")
 		.addButton("Tank Drive", () => handlePress("TD"))
@@ -42,6 +50,7 @@ function setup() {
 		.overrideStyle("STOP", "color", "white")
 		.setWidth(200)
 		.setHeight(225);
+
 	for (let state of states) {
 		driveSettings.overrideStyle(state, "backgroundColor", "gray");
 	}
@@ -73,6 +82,18 @@ function setup() {
 	sendState();
 }
 
+let cmdQueue = [];
+function xboxServerRecv(msg) {
+	const cmd = msg.data.split(':');
+	if (cmd.length < 2)
+		return;
+
+
+	if (msg[0] == "a") {
+
+	}
+}
+
 // Changes mode when someone clicks the button
 function handlePress(name) {
 	if (name === "STOP") {
@@ -92,14 +113,26 @@ function handlePress(name) {
 	}
 }
 
+async function emptyQueue() {
+	cmdQueue.forEach((e, i) => {
+		send(e[0], e[1]);
+	});
+	cmdQueue = [];
+}
+
 // Async loop to send Arcade/Tank Drive commands
 async function sendState() {
 	if (state >= 0 && state < 2) {
 		await sendXBOX(states[state].split(" ").map(n => n[0]).join(""));
 	}
+
+	emptyQueue()
+
+	// sleep function
 	await new Promise(next => setTimeout(next, generalSettings.getValue("Controller refresh (ms)")));
 	sendState();
 }
+
 
 // Changes color of buttons
 function handleStateChange(oldState, newState) {
@@ -107,6 +140,7 @@ function handleStateChange(oldState, newState) {
 	if (newState >= 0) driveSettings.overrideStyle(states[newState], "backgroundColor", "green");
 	state = newState;
 }
+
 
 // Makes the appropriate requests for Arcade/Tank Drive
 async function sendXBOX(name) {
