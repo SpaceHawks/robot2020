@@ -61,16 +61,17 @@ class Locater(Wrapper):
 			return
 
 		# Use all possible triangles to triangulate position
-		xs = []
+
+		os = []
 		ys = []
 		for k in range(len(targets) - 1):
 			t1 = targets[k]
 			t2 = targets[k+1]
-			(_x, _y) = self.target_xy(t1, t2)
-			xs.append(_x)
+			(_o, _y) = self.target_xy(t1, t2)
+			os += _o
 			ys.append(_y)
 
-		return (xs, ys)
+		return (os, ys)
 
 	def removeOutliers(self, x):
 		# Removes outliers before taking the average
@@ -101,20 +102,29 @@ class Locater(Wrapper):
 
 		y = d1 * d2 * math.sin(theta) / stripe_width
 
-		return (0, y)
+		orientation = math.acos(y/d2) + angle2
+
+		orientation2 = math.acos(y/d1) + angle1
+
+		# print(f"orientation1: {orientation * 180 / math.pi}, orientation2: {orientation2 * 180 / math.pi}")
+		# print(orientation * 180 / math.pi, "deg")``
+		return ((orientation, orientation2), y)
 
 	def update(self):
-		ITERATIONS = 10
+		ITERATIONS = 100
 
-		xs = []
+		os = []
 		ys = []
 
 		for i in range(ITERATIONS):
-			(_xs, _ys) = self.single_run();
-			xs += _xs
+			(_os, _ys) = self.single_run();
+			os += _os
 			ys += _ys
 
 		y_avg = self.removeOutliers(ys)
+		o_avg = self.removeOutliers(os)
+
+		print(f"o: {round(o_avg * 180 / math.pi, 2)} degrees")
 		print(f"y: {round(0.1 * y_avg, 2)} cm")
 
 
