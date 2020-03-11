@@ -47,8 +47,21 @@ def receive_msg(msg, conn):
 
     #start trench digger
     elif cmd == 'DIG':
-        motors.Trenchdigger.set_TD_speed(0.75)
+        motors.Trenchdigger.set_TD_speed(1)
         print('trench digger active')
+
+    elif cmd == 'DEPLOY':
+        motors.Trenchdigger.set_TD_speed(0.5)
+        linear_actuator.LinearActuatorPair.set_position(1)
+        motors.Trenchdigger.set_TD_speed(0)
+
+    elif cmd == 'RETRACT':
+        motors.Trenchdigger.set_TD_speed(0)
+        linear_actuator.LinearActuatorPair.set_position(0)
+
+    elif cmd == 'DUMP':
+        linear_actuator.Hopper.set_hopper(1)
+        linear_actuator.Hopper.set_hopper(0)
 
     else:
         motors.DriveTrain.tank_drive(0,0)
