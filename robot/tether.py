@@ -10,7 +10,7 @@ import pickle
 sendData = None
 
 # start server, begin accepting connections
-async def realrespond(msg,path,resp,proc):
+async def realrespond(msg, path, resp, proc):
     print(msg,path,resp)
     proc(msg,resp)
 
@@ -24,7 +24,7 @@ def accept_connections(proc):
 
     async def send(msg):
         await res.send(msg)
-    
+
     sendData = send
 
     start_server = websockets.serve(respond, "0.0.0.0", port=8080)

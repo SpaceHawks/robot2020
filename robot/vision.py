@@ -22,16 +22,17 @@ class Locater(Wrapper):
 		self.x_coordinate = 0.0
 		self.y_coordinate = 0.0
 		self.orientation = 0.0
+		self.outlierConstant = 1.5
 
-	def update(self):
+	def single_run(self):
 		# How reflective is the light part of the target?
 		REFLECTIVITY_THRESHOLD = 3000
 
-		# Returns [(angle, distance, intensity), ...]
+		# get_intens() returns [(angle, distance, intensity), ...]
 		data_points = super().get_intens()
 		looking_for_brighter = True
 		targets = []
-		points_left = 3
+		points_left = 6
 
 		"""
 		Store into targets:
@@ -56,40 +57,66 @@ class Locater(Wrapper):
 			# else: on for-loop = "if break not called in for loop:"
 			# Target not found, should probably raise an exception or sumn
 			print("Target not found")
+			exit()
 			return
 
-		distance_to_origin = targets[1][1] # Dark point distance
-		distance_to_helper = targets[0][1] # First light point distance
+		# Use all possible triangles to triangulate position
+		xs = []
+		ys = []
+		for k in range(len(targets) - 1):
+			t1 = targets[k]
+			t2 = targets[k+1]
+			(_x, _y) = self.target_xy(t1, t2)
+			xs.append(_x)
+			ys.append(_y)
 
-		angle1 = targets[1][0] # Dark point angle
-		angle2 = targets[0][0] # Light point angle
+		return (xs, ys)
 
-		angle_difference = abs(angle1 - angle2)
+	def removeOutliers(self, x):
+		# Removes outliers before taking the average
+		a = np.array(x)
+		upper_quartile = np.percentile(a, 75)
+		lower_quartile = np.percentile(a, 25)
+		IQR = (upper_quartile - lower_quartile) * self.outlierConstant
+		quartileSet = (lower_quartile - IQR, upper_quartile + IQR)
 
-		# TODO: This should be used to verify that we are looking at the correct area
-		#		it should be really close to the actual stripe width
+		y_sum = 0
+		count = 0
+		for y in a:
+			if y >= quartileSet[0] and y <= quartileSet[1]:
+				y_sum += y
+				count += 1
 
-		# Calculate via Law of Cosines
-		stripe_width = math.sqrt((distance_to_origin**2)+(distance_to_helper**2)-(2*distance_to_helper*distance_to_origin*math.cos(angle_difference)))
+		return y_sum / count if count > 0 else 0
 
-		# Math proof here https://drive.google.com/file/d/1Imi_5TYSH6YQEKciQ27xJUhhHKdNim4q/view
-		origin_angle = abs(math.asin((distance_to_helper*math.sin(angle_difference))/stripe_width))
+	def target_xy(self, t1, t2):
+		[angle1, d1, _] = t1
+		[angle2, d2, _] = t2
 
-		# Correct for sign
-		x_factor = -1
-		if origin_angle > math.pi / 2:
-			x_factor = 1
-			origin_angle = math.pi - origin_angle
-		x_coordinate = distance_to_origin*math.cos(origin_angle) * x_factor
-		y_coordinate = distance_to_origin*math.sin(origin_angle)
+		theta = abs(angle1 - angle2)
 
-		print(f"x:{x_coordinate} mm, y:{y_coordinate} mm, a: {origin_angle}")
-		print(f"a1:{angle1 * 180 / math.pi}, a2: {angle2 * 180 / math.pi}")
+		stripe_width = math.sqrt((d1**2)+(d2**2)-(2*d1*d2*math.cos(theta)))
 
-		# TODO: Finish adding orientation
-		#orientation = math.pi / 2 - angle1 - origin_angle
+		# alpha = math.asin(d1 * math.sin(theta) / stripe_width)
 
-		self.x_coordinate, self.y_coordinate, self.orientation = x_coordinate, y_coordinate, orientation
+		y = d1 * d2 * math.sin(theta) / stripe_width
+
+		return (0, y)
+
+	def update(self):
+		ITERATIONS = 10
+
+		xs = []
+		ys = []
+
+		for i in range(ITERATIONS):
+			(_xs, _ys) = self.single_run();
+			xs += _xs
+			ys += _ys
+
+		y_avg = self.removeOutliers(ys)
+		print(f"y: {round(0.1 * y_avg, 2)} cm")
+
 
 	def getX(self):
 		return self.x_coordinate
