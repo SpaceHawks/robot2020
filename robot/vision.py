@@ -2,6 +2,9 @@
 from hokuyolx import HokuyoLX
 import numpy as np
 import math
+import sys
+from termcolor import colored, cprint
+
 
 #superclass for Locater and Detector
 class Wrapper:
@@ -75,6 +78,7 @@ class Locater(Wrapper):
 
 	def removeOutliers(self, x):
 		# Removes outliers before taking the average
+		pos = 0
 		a = np.array(x)
 		upper_quartile = np.percentile(a, 75)
 		lower_quartile = np.percentile(a, 25)
@@ -102,16 +106,29 @@ class Locater(Wrapper):
 
 		y = d1 * d2 * math.sin(theta) / stripe_width
 
-		orientation = math.acos(y/d2) + angle2
+		correction_mult = 1 if d1 < d2 else -1 # 1 if right of target
 
-		orientation2 = math.acos(y/d1) + angle1
+		orientation = correction_mult * angle1 - math.acos(y/d1)
+
+		orientation2 = correction_mult * angle2 - math.acos(y/d2)
+
+		def toDeg(x):
+			return colored(str(round(x * 180 / math.pi, 2)) + ' deg', 'green')
+
+		def toCM(x):
+			return colored(str(round(x / 10, 2)) + ' cm', 'green')
+
+		print(f"d1: {toCM(d1)}, a1: {toDeg(angle1)}")
+		print(f"d2: {toCM(d2)}, a2: {toDeg(angle2)}")
+		print(f"o1: {toDeg(orientation)}, o2: {toDeg(orientation2)}")
+		print(f"y: {toCM(y)}\n")
 
 		# print(f"orientation1: {orientation * 180 / math.pi}, orientation2: {orientation2 * 180 / math.pi}")
 		# print(orientation * 180 / math.pi, "deg")``
 		return ((orientation, orientation2), y)
 
 	def update(self):
-		ITERATIONS = 100
+		ITERATIONS = 10
 
 		os = []
 		ys = []
