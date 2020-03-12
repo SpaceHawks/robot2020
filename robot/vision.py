@@ -71,7 +71,7 @@ class Locater(Wrapper):
 			t1 = targets[k]
 			t2 = targets[k+1]
 			(_o, _y) = self.target_xy(t1, t2)
-			os += _o
+			os.append(_o)
 			ys.append(_y)
 
 		return (os, ys)
@@ -106,11 +106,11 @@ class Locater(Wrapper):
 
 		y = d1 * d2 * math.sin(theta) / stripe_width
 
-		correction_mult = 1 if d1 < d2 else -1 # 1 if right of target
+		side_of_target = 1 if d1 < d2 else -1 # 1 if right of target
 
-		orientation = correction_mult * angle1 - math.acos(y/d1)
+		sign = 1 if angle1 >= 0 else -1 # 1 if robot pointing right, 0 if pointing left
 
-		orientation2 = correction_mult * angle2 - math.acos(y/d2)
+		orientation = sign * abs(side_of_target * angle1 - math.acos(y/d1))
 
 		def toDeg(x):
 			return colored(str(round(x * 180 / math.pi, 2)) + ' deg', 'green')
@@ -120,12 +120,12 @@ class Locater(Wrapper):
 
 		print(f"d1: {toCM(d1)}, a1: {toDeg(angle1)}")
 		print(f"d2: {toCM(d2)}, a2: {toDeg(angle2)}")
-		print(f"o1: {toDeg(orientation)}, o2: {toDeg(orientation2)}")
+		print(f"o1: {toDeg(orientation)}")
 		print(f"y: {toCM(y)}\n")
 
 		# print(f"orientation1: {orientation * 180 / math.pi}, orientation2: {orientation2 * 180 / math.pi}")
 		# print(orientation * 180 / math.pi, "deg")``
-		return ((orientation, orientation2), y)
+		return (orientation, y)
 
 	def update(self):
 		ITERATIONS = 10
