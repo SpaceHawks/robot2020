@@ -1,5 +1,4 @@
 #vision.py
-#test commit 10-14-20
 from hokuyolx import HokuyoLX
 import numpy as np
 import math
